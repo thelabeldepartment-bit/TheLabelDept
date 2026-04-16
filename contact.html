@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontakt — The Label Dept</title>
+<meta name="description" content="Projekt anfragen oder einfach Hallo sagen — ich freue mich auf deine Nachricht. Antwort innerhalb von 24h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+body { background: #ffffff; }
+
+/* ── Layout ── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 20px; align-items: start; }
+
+/* ── Info card ── */
+.contact-info-card {
+  border-radius: var(--r-xl); padding: 36px 32px;
+  display: flex; flex-direction: column; gap: 28px;
+  position: sticky; top: 100px;
+}
+.contact-title { font-family: 'Clash Display', sans-serif; font-size: clamp(22px,2.5vw,32px); font-weight: 600; color: var(--ink); line-height: 1.1; }
+.contact-subtitle { font-size: 13px; color: var(--mist); line-height: 1.75; }
+
+.contact-details { display: flex; flex-direction: column; gap: 16px; }
+.contact-row { display: flex; align-items: flex-start; gap: 14px; }
+.contact-icon {
+  width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+  background: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.88);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.contact-row-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); margin-bottom: 2px; }
+.contact-row-val { font-size: 14px; color: var(--ink); font-weight: 500; }
+.contact-row-val a { color: inherit; transition: color 0.2s; }
+.contact-row-val a:hover { color: var(--accent); }
+
+.avail-badge {
+  border-radius: var(--r-md); padding: 14px 18px;
+  background: rgba(221,240,234,0.55); border: 1px solid rgba(150,210,190,0.45);
+  display: flex; align-items: center; gap: 12px;
+}
+.avail-dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf7d; flex-shrink: 0; animation: scPulse 2.4s ease-in-out infinite; }
+.avail-text { font-size: 13px; color: #2d6e52; font-weight: 500; }
+
+/* ── Form card ── */
+.form-card { border-radius: var(--r-xl); padding: 48px 44px; position: relative; overflow: hidden; }
+.form-card::before {
+  content: '';
+  position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.95), transparent);
+}
+.form-card::after {
+  content: '';
+  position: absolute; top: -140px; right: -90px; width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%);
+  pointer-events: none;
+}
+.form-title { font-family: 'Clash Display', sans-serif; font-size: clamp(22px,2.5vw,32px); font-weight: 600; color: var(--ink); margin-bottom: 32px; position: relative; z-index: 1; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; position: relative; z-index: 1; }
+.form-full { grid-column: 1 / -1; }
+.form-group { display: flex; flex-direction: column; gap: 7px; }
+.form-group label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mist); }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; color: var(--ink);
+  background: rgba(255,255,255,0.62); border: 1px solid rgba(255,255,255,0.82);
+  border-radius: var(--r-md); padding: 13px 16px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--mist); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(71,58,49,0.18);
+}
+.form-group select { appearance: none; cursor: pointer; }
+.form-group textarea { resize: vertical; min-height: 110px; }
+
+.form-submit {
+  width: 100%; padding: 16px 32px; border-radius: var(--r-full);
+  background: var(--ink); color: rgba(255,255,255,0.92);
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 0.06em; border: none; cursor: pointer;
+  transition: all 0.3s; box-shadow: 0 8px 24px rgba(28,24,36,0.18);
+  position: relative; z-index: 1; margin-top: 8px;
+}
+.form-submit:hover { background: var(--ink2); transform: translateY(-2px); }
+.form-submit:disabled { opacity: 0.6; transform: none; cursor: default; }
+.form-note { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: var(--mist); text-align: center; margin-top: 14px; position: relative; z-index: 1; }
+
+/* ── FAQ ── */
+.faq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.faq-item { border-radius: var(--r-xl); padding: 28px 28px; }
+.faq-q { font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+.faq-a { font-size: 13px; color: var(--mist); line-height: 1.7; }
+
+@media(max-width:860px){
+  .contact-grid { grid-template-columns:1fr; }
+  .contact-info-card { position:static; }
+  .form-card { padding:32px 24px; }
+  .form-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div id="bg-mesh"></div>
+
+<nav>
+  <span class="nav-logo-text">The Label Dept</span>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+  </div>
+  <a href="contact.html" class="nav-cta">Projekt starten</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="sec-label r">Schreib mir</div>
+    <h1 class="sec-h r" style="margin-bottom:16px;">Kontakt</h1>
+    <p style="font-size:15px;color:var(--mist);line-height:1.7;max-width:520px;" class="r">Ob neue Website, App-Idee oder KI-Projekt — erzähl mir, was du vorhast. Das Erstgespräch ist kostenlos und unverbindlich.</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:20px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="contact-grid">
+
+      <!-- Info -->
+      <div>
+        <div class="contact-info-card glass r">
+          <div>
+            <div class="contact-title">Lass uns reden.</div>
+            <p class="contact-subtitle">Kein Callcenter, kein Formular-Chaos — eine echte Antwort von mir, persönlich. Innerhalb von 24 Stunden.</p>
+          </div>
+          <div class="contact-details">
+            <div class="contact-row">
+              <div class="contact-icon">✉️</div>
+              <div>
+                <div class="contact-row-label">E-Mail</div>
+                <div class="contact-row-val"><a href="mailto:thelabeldepartment@gmail.com">thelabeldepartment@gmail.com</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-icon">📞</div>
+              <div>
+                <div class="contact-row-label">Telefon</div>
+                <div class="contact-row-val"><a href="tel:+4917684020863">0176 840 20863</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-icon">📍</div>
+              <div>
+                <div class="contact-row-label">Adresse</div>
+                <div class="contact-row-val">Nürtingen, Baden-Württemberg</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-icon">🕐</div>
+              <div>
+                <div class="contact-row-label">Erreichbarkeit</div>
+                <div class="contact-row-val">Mo–Fr, 9–18 Uhr</div>
+              </div>
+            </div>
+          </div>
+          <div class="avail-badge">
+            <div class="avail-dot"></div>
+            <span class="avail-text">Aktuell verfügbar für neue Projekte</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="form-card glass r">
+        <div class="form-title">Projektanfrage stellen</div>
+        <form id="contact-form" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Dein Name</label>
+              <input type="text" id="name" name="name" placeholder="Dein Name …" required>
+            </div>
+            <div class="form-group">
+              <label for="email">E-Mail-Adresse</label>
+              <input type="email" id="email" name="email" placeholder="max@beispiel.de" required>
+            </div>
+            <div class="form-group">
+              <label for="company">Unternehmen (optional)</label>
+              <input type="text" id="company" name="company" placeholder="Dein Unternehmen …">
+            </div>
+            <div class="form-group">
+              <label for="phone">Telefon (optional)</label>
+              <input type="tel" id="phone" name="phone" placeholder="+49 ...">
+            </div>
+            <div class="form-group form-full">
+              <label for="service">Gewünschte Leistung</label>
+              <select id="service" name="service">
+                <option value="" disabled selected>Bitte auswählen …</option>
+                <option>Webdesign &amp; Development</option>
+                <option>App-Entwicklung</option>
+                <option>KI &amp; Automatisierung</option>
+                <option>E-Commerce</option>
+                <option>Markenstrategie / Analyse</option>
+                <option>Anderes / Ich bin unsicher</option>
+              </select>
+            </div>
+            <div class="form-group form-full">
+              <label for="budget">Ungefähres Budget</label>
+              <select id="budget" name="budget">
+                <option value="" disabled selected>Bitte auswählen …</option>
+                <option>Unter 2.000 €</option>
+                <option>2.000 – 5.000 €</option>
+                <option>5.000 – 15.000 €</option>
+                <option>Über 15.000 €</option>
+                <option>Noch offen</option>
+              </select>
+            </div>
+            <div class="form-group form-full">
+              <label for="message">Erzähl mir von deinem Projekt</label>
+              <textarea id="message" name="message" rows="5" placeholder="Was hast du vor? Welches Problem soll gelöst werden? Was ist die Zielgruppe? Je mehr du erzählst, desto gezielter kann ich antworten." required></textarea>
+            </div>
+            <div class="form-group form-full">
+              <label for="timeline">Wann soll das Projekt starten?</label>
+              <select id="timeline" name="timeline">
+                <option value="" disabled selected>Bitte auswählen …</option>
+                <option>So bald wie möglich</option>
+                <option>Innerhalb eines Monats</option>
+                <option>In den nächsten 3 Monaten</option>
+                <option>Später / Noch offen</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="form-submit">Anfrage absenden →</button>
+          <p class="form-note">Ich antworte innerhalb von 24 Stunden · Keine Weitergabe deiner Daten</p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="sec-label r">Häufige Fragen</div>
+    <h2 class="sec-h r" style="margin-bottom:40px;">Das fragt man mich oft</h2>
+    <div class="faq-grid">
+      <div class="faq-item glass r" data-tilt>
+        <div class="faq-q">Wie läuft ein Projekt ab?</div>
+        <p class="faq-a">Erst ein kurzes Kennenlerngespräch, dann Konzept &amp; Design, dann Entwicklung — mit dir im Loop. Du siehst alles, bevor es live geht.</p>
+      </div>
+      <div class="faq-item glass r" data-tilt>
+        <div class="faq-q">Wie lange dauert eine Website?</div>
+        <p class="faq-a">Eine Standard-Website ist in 3–5 Wochen fertig. Komplexere Projekte plane ich gemeinsam mit dir und einem realistischen Zeitplan.</p>
+      </div>
+      <div class="faq-item glass r" data-tilt>
+        <div class="faq-q">Arbeitest du auch mit kleinen Budgets?</div>
+        <p class="faq-a">Ja — mein Starter-Paket beginnt bei 1.800 €. Wenn dein Budget kleiner ist, spreche ich ehrlich darüber, was möglich ist.</p>
+      </div>
+      <div class="faq-item glass r" data-tilt>
+        <div class="faq-q">Kann ich die Website selbst bearbeiten?</div>
+        <p class="faq-a">Ja. Ich programmiere ein individuelles Backend mit Bearbeitungsfunktionen — maßgeschneidert für deine Bedürfnisse, egal welche Anforderungen dein Projekt hat.</p>
+      </div>
+      <div class="faq-item glass r" data-tilt>
+        <div class="faq-q">Bietest du laufende Betreuung an?</div>
+        <p class="faq-a">Absolut. Viele meiner Kunden betreue ich langfristig — Updates, neue Features, SEO-Optimierung, Content-Pflege.</p>
+      </div>
+      <div class="faq-item glass r" data-tilt>
+        <div class="faq-q">Arbeitest du remote oder vor Ort?</div>
+        <p class="faq-a">Hauptsächlich remote. Für Projekte in der Region Stuttgart / Nürtingen treffe ich mich gerne auch persönlich.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:80px 40px 120px;text-align:center;position:relative;z-index:1;">
+  <div class="cta-lbl" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:var(--mist);display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px;">
+    <span style="display:block;width:20px;height:1px;background:var(--mist);"></span>Noch Fragen?<span style="display:block;width:20px;height:1px;background:var(--mist);"></span>
+  </div>
+  <h2 style="font-family:'Clash Display',sans-serif;font-size:clamp(48px,8vw,100px);font-weight:600;letter-spacing:-0.05em;line-height:0.88;color:var(--ink);">
+    Einfach<br><span style="-webkit-text-stroke:2px rgba(28,24,36,0.12);color:transparent;">anrufen.</span>
+  </h2>
+  <div class="glass r" style="max-width:480px;margin:48px auto 0;border-radius:var(--r-xl);padding:44px;position:relative;overflow:hidden;text-align:center;">
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mist);line-height:1.75;margin-bottom:28px;letter-spacing:0.04em;">Oder schreib eine kurze Nachricht — ich bin unkompliziert.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <a href="mailto:thelabeldepartment@gmail.com" class="btn-main">E-Mail schreiben</a>
+      <a href="portfolio.html" class="btn-ghost">Portfolio ansehen</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="f-logo-text">The Label Dept</span>
+  <div class="f-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+    <a href="impressum.html">Impressum</a>
+  </div>
+  <span class="f-copy">© 2025 The Label Dept · Nürtingen</span>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

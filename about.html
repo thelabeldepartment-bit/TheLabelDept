@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio — The Label Dept</title>
+<meta name="description" content="Wer ich bin, wie ich arbeite und warum ich tue, was ich tue. Das Studio hinter The Label Dept in Nürtingen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+/* ── Story ── */
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.story-visual {
+  border-radius: var(--r-xl); aspect-ratio: 4/5;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Clash Display', sans-serif; font-size: 8rem; font-weight: 700;
+  color: rgba(28,24,36,0.07); position: relative; overflow: hidden;
+}
+.story-visual::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.9), transparent);
+}
+.story-visual::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 65% 65% at 50% 50%, rgba(71,58,49,0.18), transparent 70%);
+}
+.story-text { display: flex; flex-direction: column; gap: 20px; }
+.story-text p { font-size: 15px; color: var(--mist); line-height: 1.85; }
+.story-text strong { color: var(--ink); font-weight: 700; }
+
+/* ── Values ── */
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.value-card {
+  border-radius: var(--r-xl); padding: 36px 32px;
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative; overflow: hidden;
+}
+.value-card::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.9), transparent);
+}
+.value-icon {
+  width: 48px; height: 48px; border-radius: var(--r-md);
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.85);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.value-name { font-family: 'Clash Display', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--ink); }
+.value-desc { font-size: 13px; color: var(--mist); line-height: 1.7; }
+
+/* ── Team ── */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.team-card { border-radius: var(--r-xl); overflow: hidden; }
+.team-photo {
+  aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+  font-family: 'Clash Display', sans-serif; font-size: 3.5rem; font-weight: 700;
+  color: rgba(28,24,36,0.14);
+}
+.team-info { padding: 22px 24px 28px; }
+.team-name { font-family: 'Clash Display', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.team-role { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.team-bio { font-size: 13px; color: var(--mist); line-height: 1.65; }
+
+/* ── Timeline ── */
+.timeline { position: relative; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 48px; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(71,58,49,0.5), transparent);
+}
+.tl-item { display: grid; grid-template-columns: 96px 1fr; gap: 20px; padding: 20px 0; align-items: flex-start; }
+.tl-year { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-align: right; padding-top: 18px; padding-right: 14px; }
+.tl-content { border-radius: var(--r-lg); padding: 20px 24px; }
+.tl-event { font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.tl-desc { font-size: 13px; color: var(--mist); line-height: 1.65; }
+
+/* ── Dark about block ── */
+#about-dark {
+  position: relative; z-index: 1;
+  background: #1a1410; padding: 100px 40px; overflow: hidden;
+}
+#about-dark::before {
+  content: '';
+  position: absolute; top: -300px; right: -200px; width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(71,58,49,0.28), transparent 65%);
+}
+.adark-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; position: relative; z-index: 2; }
+.adark-h {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(42px,5.5vw,72px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 0.9;
+  color: rgba(255,255,255,0.92);
+}
+.adark-h em { color: rgba(255,255,255,0.2); font-style: normal; }
+.adark-lbl {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 22px;
+}
+.adark-lbl::before { content: ''; width: 14px; height: 1px; background: rgba(255,255,255,0.22); }
+.adark-body p { font-size: 14px; line-height: 1.9; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+.adark-body strong { color: rgba(255,255,255,0.78); font-weight: 700; }
+.adark-quote {
+  margin-top: 32px; border-left: 1px solid rgba(255,255,255,0.1);
+  padding-left: 18px; font-family: 'DM Mono', monospace; font-size: 11px;
+  font-style: italic; line-height: 1.8; color: rgba(255,255,255,0.22);
+}
+.adark-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 60px; position: relative; z-index: 2; }
+.astat {
+  border-radius: var(--r-lg); padding: 28px 22px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset;
+  transition: all 0.3s;
+}
+.astat:hover { background: rgba(255,255,255,0.09); transform: translateY(-4px); }
+.astat-n { font-family: 'Clash Display', sans-serif; font-size: 42px; font-weight: 600; color: rgba(255,255,255,0.88); letter-spacing: -0.04em; line-height: 1; }
+.astat-l { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-top: 6px; }
+
+@media(max-width:860px){
+  .story-grid { grid-template-columns:1fr; }
+  .adark-grid { grid-template-columns:1fr; gap:40px; }
+  .adark-stats { grid-template-columns:repeat(2,1fr); }
+  .tl-item { grid-template-columns: 64px 1fr; gap:14px; }
+  .timeline::before { left:32px; }
+}
+</style>
+</head>
+<body>
+<div id="bg-mesh"></div>
+
+<nav>
+  <span class="nav-logo-text">The Label Dept</span>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+  </div>
+  <a href="contact.html" class="nav-cta">Projekt starten</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="sec-label r">Das Studio</div>
+    <h1 class="sec-h r" style="margin-bottom:16px;">Ich bin<br><span>The Label Dept</span></h1>
+    <p style="font-size:15px;color:var(--mist);line-height:1.7;max-width:520px;" class="r">Ein kleines Studio mit großem Anspruch — ich liebe digitale Gestaltung und glaube daran, dass gutes Design einen echten Unterschied macht.</p>
+  </div>
+</div>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="mi">Gegründet 2025 <span class="msep">✦</span></span>
+    <span class="mi">Nürtingen <span class="msep">✦</span></span>
+    <span class="mi">Solo-Studio <span class="msep">✦</span></span>
+    <span class="mi">48+ Projekte <span class="msep">✦</span></span>
+    <span class="mi">12 Branchen <span class="msep">✦</span></span>
+    <span class="mi">KI-First Studio <span class="msep">✦</span></span>
+  </div>
+</div>
+
+<!-- Story -->
+<section class="section">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="story-grid">
+      <div class="story-visual glass rl">TLD</div>
+      <div class="story-text rr">
+        <div class="sec-label">Meine Geschichte</div>
+        <h2 class="sec-h" style="font-size:clamp(28px,3.5vw,48px);">Von der Idee<br>zum Studio</h2>
+        <p>Ich bin kreative Macherin und Mama meiner Tochter Yia. Nach einigen prägenden Jahren in Los Angeles lebe ich heute mit ihr in Nürtingen und genieße das Abenteuer, Beruf und Muttersein zu vereinen.</p>
+        <p>Ich verbinde <strong>Herz und Vision</strong>: empathisch, strukturiert und voller Ideen. Kreativität ist für mich nicht nur Arbeit, sondern meine Sprache — ich liebe es, Konzepte zu entwickeln, die Menschen berühren und bleibenden Eindruck hinterlassen.</p>
+        <p>Mit <strong>The Label Dept</strong> baue ich digitale Produkte, die nicht nur schön aussehen, sondern wirklich funktionieren — von der ersten Idee bis zum fertigen Produkt, alles aus einer Hand.</p>
+        <a href="contact.html" class="btn-main" style="align-self:flex-start;margin-top:8px;font-size:11px;padding:12px 28px;">Mit mir arbeiten →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dark About Block -->
+<section id="about-dark">
+  <div class="adark-grid">
+    <div class="rl">
+      <div class="adark-lbl">Studio</div>
+      <h2 class="adark-h">Ich baue<br><em>Digitales</em><br>das bleibt.</h2>
+    </div>
+    <div class="rr">
+      <div class="adark-body">
+        <p>Kein Outsourcing. Kein Template-Kram. Jedes Projekt bekommt meine <strong>volle Aufmerksamkeit</strong> — von der ersten Zeile Code bis zum Launch.</p>
+        <p>Mein Anspruch hat sich seit dem ersten Tag nicht verändert: <strong>Ehrlichkeit, Qualität und echte Partnerschaft</strong>.</p>
+      </div>
+      <div class="adark-quote">"Erst verstehen. Dann gestalten. Immer liefern."</div>
+    </div>
+  </div>
+  <div class="adark-stats">
+    <div class="astat r"><div class="astat-n">48+</div><div class="astat-l">Projekte</div></div>
+    <div class="astat r"><div class="astat-n">97%</div><div class="astat-l">Zufriedenheit</div></div>
+    <div class="astat r"><div class="astat-n">4 J.</div><div class="astat-l">Erfahrung</div></div>
+    <div class="astat r"><div class="astat-n">12</div><div class="astat-l">Branchen</div></div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="section">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="sec-label r">Was mich antreibt</div>
+    <h2 class="sec-h r" style="margin-bottom:48px;">Meine Werte</h2>
+    <div class="values-grid">
+      <div class="value-card glass r" data-tilt>
+        <div class="value-icon">🎯</div>
+        <div class="value-name">Qualität über Quantität</div>
+        <p class="value-desc">Ich nehme weniger Projekte an, um jedem die volle Aufmerksamkeit zu geben.</p>
+      </div>
+      <div class="value-card glass r" data-tilt>
+        <div class="value-icon">🤝</div>
+        <div class="value-name">Echte Partnerschaft</div>
+        <p class="value-desc">Ich bin keine Dienstleisterin, ich bin Partnerin. Dein Erfolg ist mein Erfolg.</p>
+      </div>
+      <div class="value-card glass r" data-tilt>
+        <div class="value-icon">💡</div>
+        <div class="value-name">Neugier &amp; Lernen</div>
+        <p class="value-desc">Ich bleibe neugierig, lerne kontinuierlich und bringe Neues in jedes Projekt.</p>
+      </div>
+      <div class="value-card glass r" data-tilt>
+        <div class="value-icon">🔍</div>
+        <div class="value-name">Transparenz</div>
+        <p class="value-desc">Keine versteckten Kosten, keine Überraschungen. Ich kommuniziere offen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section" style="padding-top:0;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="sec-label r">Die Person dahinter</div>
+    <h2 class="sec-h r" style="margin-bottom:48px;">Das bin ich</h2>
+    <div class="team-grid" style="max-width:360px;">
+      <div class="team-card glass r" data-tilt>
+        <div class="team-photo" style="background:linear-gradient(135deg,#f0ebe7,#ddd5cf);">KG</div>
+        <div class="team-info">
+          <div class="team-name">Katrin Guerrero</div>
+          <div class="team-role">Gründerin · Creative Director</div>
+          <p class="team-bio">Kreative Macherin, Mama von Yia, ehemalige LA-Bewohnerin — heute in Nürtingen. Ich verbinde Herz und Vision: empathisch, strukturiert und voller Ideen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section style="padding:80px 40px 120px;text-align:center;position:relative;z-index:1;">
+  <div class="cta-lbl" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:var(--mist);display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px;">
+    <span style="display:block;width:20px;height:1px;background:var(--mist);"></span>Lust auf Zusammenarbeit?<span style="display:block;width:20px;height:1px;background:var(--mist);"></span>
+  </div>
+  <h2 style="font-family:'Clash Display',sans-serif;font-size:clamp(48px,8vw,100px);font-weight:600;letter-spacing:-0.05em;line-height:0.88;color:var(--ink);">
+    Lern mich<br><span style="-webkit-text-stroke:2px rgba(28,24,36,0.12);color:transparent;">kennen.</span>
+  </h2>
+  <div class="glass r" style="max-width:560px;margin:48px auto 0;border-radius:var(--r-xl);padding:44px;position:relative;overflow:hidden;">
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mist);line-height:1.75;margin-bottom:32px;letter-spacing:0.04em;">Kostenloses Erstgespräch — 30 Minuten, unverbindlich.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <a href="contact.html" class="btn-main">Kontakt aufnehmen</a>
+      <a href="portfolio.html" class="btn-ghost">Meine Arbeit</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="f-logo-text">The Label Dept</span>
+  <div class="f-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+    <a href="impressum.html">Impressum</a>
+  </div>
+  <span class="f-copy">© 2025 The Label Dept · Nürtingen</span>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

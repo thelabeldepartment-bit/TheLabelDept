@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Label Dept — Digital Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+
+/* ── VIDEO BACKGROUND ── */
+#bg-video {
+  position: fixed; inset: 0; z-index: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+/* ── HERO ── */
+#hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* LEFT COLUMN */
+.hero-left {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 120px 0 80px 72px;
+  max-width: 560px;
+  min-height: 100vh;
+}
+
+.hero-logo-wrap {
+  margin-bottom: 28px;
+  opacity: 0; animation: fadeUp 1s 0.1s ease forwards;
+}
+.hero-logo-text {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(72px, 10vw, 148px);
+  font-weight: 600; letter-spacing: -0.02em;
+  text-transform: uppercase; color: white;
+  line-height: 0.82;
+}
+
+.hero-tagline {
+  font-size: clamp(13px, 1.4vw, 16px);
+  color: rgba(255,255,255,0.72); font-family: 'DM Mono', monospace;
+  letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400;
+  line-height: 2.2; margin-bottom: 44px;
+  opacity: 0; animation: fadeUp 0.8s 0.3s ease forwards;
+}
+.hero-tagline::before, .hero-tagline::after { display: none; }
+
+.hero-ctas {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
+}
+.hero-ctas .btn-ghost {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.3);
+  color: white;
+  box-shadow: 0 2px 0 rgba(255,255,255,0.1) inset;
+}
+.hero-ctas .btn-ghost:hover { background: rgba(255,255,255,0.22); }
+
+/* RIGHT COLUMN — full bleed photo */
+.hero-right {
+  position: absolute; right: 0; top: 0;
+  width: 54%; height: 100%;
+  z-index: 2; overflow: hidden;
+}
+.hero-photo-frame {
+  width: 100%; height: 100%;
+  background: none; border: none; box-shadow: none; border-radius: 0;
+  overflow: hidden;
+}
+.hero-photo-img {
+  width: 100%; height: 100%;
+}
+.hero-photo {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 45% 8%;
+  display: block;
+  filter: grayscale(1) contrast(1.12) brightness(1.02);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, black 28%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, black 28%);
+}
+/* subtle name credit bottom-right */
+.hero-photo-caption {
+  position: absolute; bottom: 32px; right: 32px; z-index: 4;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  pointer-events: none;
+}
+.hero-photo-name {
+  font-family: 'Clash Display', sans-serif; font-size: 18px;
+  font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(28,24,36,0.88);
+}
+
+/* STATUS PILL */
+.hero-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px 7px 12px; border-radius: var(--r-full);
+  background: var(--frost-noise) center/300px 300px, rgba(255,255,255,0.14);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.3); border-top-color: rgba(255,255,255,0.5);
+  box-shadow: 0 2px 0 rgba(255,255,255,0.15) inset;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.72); font-family: 'DM Mono', monospace;
+  margin-bottom: 32px;
+  width: fit-content;
+  opacity: 0; animation: fadeUp 0.8s 0.05s ease forwards;
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+@keyframes statusPulse { 0%,100%{box-shadow:0 0 0 3px rgba(76,175,80,0.2)} 50%{box-shadow:0 0 0 5px rgba(76,175,80,0.1)} }
+
+/* ── Cards Section (below hero) ── */
+#hero-cards-section {
+  position: relative; z-index: 1;
+  padding: 80px 48px 100px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+}
+
+/* ── Hero Cards ── */
+.hero-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; width: 100%; max-width: 1100px;
+  perspective: 1200px;
+}
+.hc {
+  border-radius: var(--r-lg);
+  padding: 32px 28px 28px;
+  cursor: pointer;
+  transition: transform 0.45s cubic-bezier(0.2,0,0.2,1), box-shadow 0.45s ease;
+  transform-style: preserve-3d;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  text-align: left;
+}
+.hc::before {
+  content: '';
+  position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.9), transparent);
+}
+.hc::after {
+  content: '';
+  position: absolute; top: -80px; right: -60px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 65%);
+  pointer-events: none;
+}
+
+/* ghost background number */
+.hc-ghost-num {
+  position: absolute; right: -6px; bottom: -24px;
+  font-family: 'Clash Display', sans-serif; font-size: 130px; font-weight: 700;
+  color: rgba(28,24,36,0.04); line-height: 1; letter-spacing: -0.06em;
+  pointer-events: none; user-select: none;
+}
+
+/* number badge */
+.hc-badge {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(71,58,49,0.22);
+  background: rgba(71,58,49,0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.06em;
+  color: var(--accent); margin-bottom: 28px; flex-shrink: 0;
+  transition: all 0.3s;
+}
+.hc:hover .hc-badge { background: rgba(71,58,49,0.12); transform: scale(1.08); }
+
+.hc-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(17px, 1.9vw, 22px); font-weight: 600; color: var(--ink);
+  line-height: 1.1; margin-bottom: 12px;
+}
+.hc-desc {
+  font-size: 12.5px; color: var(--ink2); line-height: 1.72;
+  opacity: 0.72; flex: 1;
+}
+.hc-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 24px; padding-top: 16px;
+  border-top: 1px solid rgba(28,24,36,0.08);
+}
+.hc-foot-label {
+  font-family: 'DM Mono', monospace; font-size: 8.5px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--mist);
+  transition: color 0.25s;
+}
+.hc:hover .hc-foot-label { color: var(--ink); }
+.hc-arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid rgba(28,24,36,0.10); background: rgba(255,255,255,0.5);
+  font-size: 11px; color: var(--ink); transition: all 0.3s; flex-shrink: 0;
+}
+.hc:hover .hc-arrow { background: var(--ink); color: white; border-color: var(--ink); transform: rotate(-45deg); }
+
+/* Hero Stats */
+.hero-stats {
+  display: flex; align-items: center;
+  border-radius: var(--r-full); overflow: hidden;
+  background: var(--frost-noise) center/300px 300px, rgba(255,255,255,0.38);
+  backdrop-filter: blur(28px) saturate(1.9);
+  -webkit-backdrop-filter: blur(28px) saturate(1.9);
+  border: 1px solid rgba(255,255,255,0.82); border-top-color: white;
+  box-shadow: 0 2px 0 white inset, 0 8px 24px rgba(71,58,49,0.08);
+}
+.hs-item {
+  padding: 14px 32px; text-align: center;
+  border-right: 1px solid rgba(28,24,36,0.07);
+}
+.hs-item:last-child { border-right: none; }
+.hs-n { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.03em; line-height: 1; }
+.hs-l { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mist); margin-top: 3px; }
+
+/* Hero Scroll hint */
+.hero-scroll {
+  position: absolute; bottom: 30px; left: 72px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeUp 0.8s 1.2s ease forwards;
+}
+.hero-scroll span { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(255,255,255,0.7), transparent); animation: scPulse 2s ease-in-out infinite; }
+
+/* ── SERVICES ── */
+#services { position: relative; z-index: 1; padding: 100px 40px 0; }
+.srv-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
+.srv-sub { font-size: 13px; color: rgba(255,255,255,0.45); max-width: 240px; line-height: 1.7; text-align: right; font-family: 'Cabinet Grotesk', sans-serif; }
+.srv-list { border-top: 1px solid rgba(255,255,255,0.1); }
+.srv-item {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer; overflow: hidden; transition: background 0.3s;
+}
+.srv-item:hover { background: rgba(255,255,255,0.06); }
+.srv-item.open { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); }
+.srv-header-row {
+  display: grid; grid-template-columns: 52px 1fr auto;
+  align-items: center; padding: 32px 40px; gap: 24px;
+}
+.srv-num { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: rgba(255,255,255,0.35); }
+.srv-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(22px, 2.8vw, 40px); font-weight: 600;
+  letter-spacing: -0.02em; color: white; transition: color 0.3s;
+}
+.srv-item.open .srv-title { color: rgba(255,255,255,0.85); }
+.srv-plus {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: white; line-height: 1; transition: all 0.4s;
+}
+.srv-item.open .srv-plus { background: white; color: var(--ink); transform: rotate(45deg); }
+.srv-body { overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+.srv-body-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  padding: 0 40px 40px 116px;
+}
+.srv-desc { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.8; }
+.srv-tags { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.srv-tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 6px 14px; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.65); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.82); color: var(--ink2);
+}
+
+/* ── VISUALS ── */
+#visuals { position: relative; z-index: 1; padding: 100px 40px; overflow: hidden; }
+.vis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 52px; }
+.vis-card {
+  border-radius: var(--r-xl); padding: 44px 40px;
+  position: relative; overflow: hidden; cursor: pointer; min-height: 320px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  transition: transform 0.45s cubic-bezier(0.2,0,0.2,1);
+  transform-style: preserve-3d;
+}
+.vis-card:hover { transform: translateY(-6px) scale(1.01); }
+.vis-card.tall { grid-row: span 2; min-height: 660px; }
+
+/* Orbs inside webdesign card */
+.wdc-orb1 {
+  position: absolute; width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(71,58,49,0.08));
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow: 0 8px 40px rgba(71,58,49,0.12), inset 0 2px 0 rgba(255,255,255,0.9);
+  top: -60px; right: -60px;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.wdc-orb2 {
+  position: absolute; width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(71,58,49,0.06));
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 4px 24px rgba(71,58,49,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  bottom: 60px; right: 80px;
+  animation: orbFloat 6s ease-in-out infinite reverse;
+}
+.wdc-orb3 {
+  position: absolute; width: 80px; height: 80px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.92), rgba(71,58,49,0.05));
+  border: 1px solid rgba(255,255,255,0.82);
+  bottom: 180px; right: 40px;
+  animation: orbFloat 9s ease-in-out infinite; animation-delay: -3s;
+}
+
+/* App phone mock */
+.app-phone {
+  position: absolute; right: 32px; top: 32px; bottom: 32px; width: 168px;
+  background: rgba(18,16,14,0.82); backdrop-filter: blur(24px) saturate(2);
+  border: 1px solid rgba(255,255,255,0.14); border-top-color: rgba(255,255,255,0.22);
+  border-radius: 36px;
+  box-shadow: 0 2px 0 rgba(255,255,255,0.1) inset, 0 24px 48px rgba(0,0,0,0.28);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.app-phone-notch {
+  width: 56px; height: 18px;
+  background: rgba(0,0,0,0.8); border-radius: 0 0 14px 14px; margin: 0 auto;
+}
+.app-phone-body { flex: 1; padding: 6px 9px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+
+/* Status bar */
+.aph-statusbar { display: flex; justify-content: space-between; align-items: center; padding: 0 1px 2px; }
+.aph-time { font-family: 'DM Mono', monospace; font-size: 7px; color: rgba(255,255,255,0.7); letter-spacing: 0.04em; }
+.aph-icons { display: flex; gap: 3px; align-items: center; }
+.aph-icon { width: 8px; height: 5px; background: rgba(255,255,255,0.5); border-radius: 1px; }
+.aph-icon.bat { width: 12px; }
+
+/* Profile header */
+.aph-header { display: flex; align-items: center; gap: 6px; padding: 1px 0; }
+.aph-avatar { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, rgba(71,58,49,0.9), rgba(120,100,85,0.7)); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
+.aph-user { display: flex; flex-direction: column; gap: 1px; }
+.aph-name { font-family: 'Cabinet Grotesk', sans-serif; font-size: 7.5px; font-weight: 700; color: rgba(255,255,255,0.9); }
+.aph-sub { font-family: 'DM Mono', monospace; font-size: 5.5px; color: rgba(255,255,255,0.35); letter-spacing: 0.06em; }
+
+/* Hero image card */
+.aph-img-card { border-radius: 11px; height: 52px; background: linear-gradient(135deg, rgba(71,58,49,0.6) 0%, rgba(30,25,20,0.85) 100%); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 6px 7px; flex-shrink: 0; }
+.aph-img-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.08), transparent 60%); }
+.aph-img-label { font-family: 'Clash Display', sans-serif; font-size: 8px; font-weight: 600; color: rgba(255,255,255,0.9); letter-spacing: 0.02em; position: relative; }
+.aph-img-badge { position: absolute; top: 6px; right: 6px; background: rgba(71,58,49,0.9); border-radius: 20px; padding: 2px 5px; font-family: 'DM Mono', monospace; font-size: 5.5px; color: rgba(255,255,255,0.85); letter-spacing: 0.04em; }
+
+/* Stats row */
+.aph-stats { display: flex; gap: 4px; flex-shrink: 0; }
+.aph-stat { flex: 1; background: rgba(255,255,255,0.06); border-radius: 8px; padding: 5px 4px; border: 1px solid rgba(255,255,255,0.08); text-align: center; }
+.aph-stat-n { font-family: 'Clash Display', sans-serif; font-size: 10px; font-weight: 600; color: white; line-height: 1; }
+.aph-stat-l { font-family: 'DM Mono', monospace; font-size: 5px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; margin-top: 2px; }
+
+/* List items */
+.aph-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.aph-list-item { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 5px 6px; border: 1px solid rgba(255,255,255,0.07); }
+.aph-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.aph-dot.green { background: #4caf50; box-shadow: 0 0 5px rgba(76,175,80,0.4); }
+.aph-dot.brown { background: var(--accent); }
+.aph-dot.grey  { background: rgba(255,255,255,0.25); }
+.aph-list-text { flex: 1; min-width: 0; }
+.aph-list-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 6.5px; font-weight: 600; color: rgba(255,255,255,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aph-list-meta  { font-family: 'DM Mono', monospace; font-size: 5px; color: rgba(255,255,255,0.25); margin-top: 1px; letter-spacing: 0.03em; }
+.aph-list-val { font-family: 'DM Mono', monospace; font-size: 6.5px; color: rgba(255,255,255,0.5); flex-shrink: 0; }
+
+/* Bottom nav */
+.aph-nav { display: flex; justify-content: space-around; padding: 6px 0 0; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+.aph-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+.aph-nav-dot.active { background: var(--accent); width: 18px; border-radius: 2px; }
+
+.vis-card-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.45);
+  margin-bottom: 10px; position: relative; z-index: 2;
+}
+.vis-card-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(22px, 2.5vw, 34px); font-weight: 600;
+  letter-spacing: -0.02em; color: white; line-height: 1.05;
+  position: relative; z-index: 2;
+}
+.vis-card.tall .vis-card-title {
+  font-size: clamp(36px, 4.2vw, 62px);
+  letter-spacing: -0.03em; line-height: 0.96;
+}
+.vis-card-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 280px; position: relative; z-index: 2; margin-top: 12px; }
+.vis-card-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: var(--r-full);
+  background: var(--accent); color: rgba(255,255,255,0.95);
+  font-size: 11px; letter-spacing: 0.08em; font-weight: 700;
+  border: none; cursor: pointer; width: fit-content;
+  transition: all 0.3s; position: relative; z-index: 2; margin-top: 20px;
+  box-shadow: 0 4px 16px rgba(28,24,36,0.18); font-family: 'Cabinet Grotesk', sans-serif;
+}
+.vis-card-cta:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+.vis-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; position: relative; z-index: 2; }
+.vis-tag {
+  padding: 5px 12px; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.7); font-family: 'DM Mono', monospace;
+}
+
+/* Website browser mockup */
+.web-mockup {
+  position: absolute; bottom: 28px; right: 28px;
+  width: 220px; height: 190px;
+  background: rgba(18,16,14,0.78); border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14); border-top-color: rgba(255,255,255,0.22);
+  box-shadow: 0 2px 0 rgba(255,255,255,0.08) inset, 0 16px 40px rgba(0,0,0,0.3);
+  overflow: hidden; display: flex; flex-direction: column; z-index: 3;
+}
+.wm-bar {
+  height: 22px; background: rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; gap: 5px; padding: 0 8px; flex-shrink: 0;
+}
+.wm-dot { width: 5px; height: 5px; border-radius: 50%; }
+.wm-dot.r { background: rgba(255,100,100,0.6); }
+.wm-dot.y { background: rgba(255,200,60,0.6); }
+.wm-dot.g { background: rgba(76,175,80,0.6); }
+.wm-url {
+  flex: 1; height: 12px; background: rgba(255,255,255,0.08); border-radius: 3px;
+  margin-left: 6px; display: flex; align-items: center; padding: 0 6px;
+  font-family: 'DM Mono', monospace; font-size: 5px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em;
+}
+.wm-body { flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.wm-hero { height: 44px; border-radius: 7px; background: linear-gradient(120deg, rgba(71,58,49,0.5), rgba(30,25,20,0.8)); border: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; display: flex; align-items: center; padding: 0 10px; }
+.wm-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 40%, rgba(255,255,255,0.07), transparent 55%); }
+.wm-hero-text { font-family: 'Clash Display', sans-serif; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.85); position: relative; line-height: 1.2; }
+.wm-nav { display: flex; gap: 4px; align-items: center; margin-bottom: 2px; }
+.wm-nav-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.12); }
+.wm-nav-bar.active { background: var(--accent); width: 22px; }
+.wm-cards { display: flex; gap: 5px; }
+.wm-card { flex: 1; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+
+/* AI canvas card */
+#ai-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ── ABOUT ── */
+#about {
+  position: relative; z-index: 1;
+  background: #1a1410;
+  padding: 100px 40px; overflow: hidden;
+}
+#about::before {
+  content: '';
+  position: absolute; top: -300px; right: -200px;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(71,58,49,0.25), transparent 65%);
+  pointer-events: none;
+}
+#about::after {
+  content: '';
+  position: absolute; bottom: -200px; left: -100px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(71,58,49,0.15), transparent 65%);
+  pointer-events: none;
+}
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; position: relative; z-index: 2; }
+.about-lbl {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 22px;
+}
+.about-lbl::before { content: ''; width: 14px; height: 1px; background: rgba(255,255,255,0.22); }
+.about-h {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(42px, 5.5vw, 72px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 0.9; color: rgba(255,255,255,0.92);
+}
+.about-h em { color: rgba(255,255,255,0.2); font-style: normal; }
+.about-r p { font-size: 14px; line-height: 1.9; color: rgba(255,255,255,0.72); margin-bottom: 20px; }
+.about-r strong { color: white; font-weight: 700; }
+.about-quote {
+  margin-top: 32px; border-left: 1px solid rgba(255,255,255,0.2);
+  padding-left: 18px; font-family: 'DM Mono', monospace;
+  font-size: 11px; font-style: italic; line-height: 1.8; color: rgba(255,255,255,0.45);
+}
+.about-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 72px; position: relative; z-index: 2; }
+.astat {
+  border-radius: var(--r-lg); padding: 28px 22px;
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset;
+  transition: all 0.3s;
+}
+.astat:hover { background: rgba(255,255,255,0.09); transform: translateY(-4px); }
+.astat-n {
+  font-family: 'Clash Display', sans-serif; font-size: 42px;
+  font-weight: 600; color: rgba(255,255,255,0.88);
+  letter-spacing: -0.04em; line-height: 1;
+}
+.astat-l { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-top: 6px; }
+
+/* ── PROCESS ── */
+#process { position: relative; z-index: 1; padding: 100px 40px; background: transparent; }
+#process .sec-label { color: rgba(255,255,255,0.35); }
+#process .sec-label::before { background: rgba(255,255,255,0.35); }
+#process .sec-h { color: white; }
+.proc-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+.proc-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.45); max-width: 220px; line-height: 1.75; text-align: right; }
+.proc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.proc-card {
+  border-radius: var(--r-xl); padding: 36px 28px;
+  position: relative; overflow: hidden; cursor: default;
+  transition: all 0.4s cubic-bezier(0.2,0,0.2,1);
+  transform-style: preserve-3d;
+}
+.proc-card::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.9), transparent);
+}
+.proc-card::after {
+  content: '';
+  position: absolute; top: -90px; right: -70px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 65%);
+  pointer-events: none;
+}
+.pc-num {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.35); margin-bottom: 32px;
+  display: flex; align-items: center; gap: 10px;
+}
+.pc-num::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+.proc-card h4 { font-family: 'Clash Display', sans-serif; font-size: 18px; font-weight: 600; color: white; margin-bottom: 10px; }
+.proc-card p { font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.55); line-height: 1.8; }
+
+/* ── CTA ── */
+#cta {
+  position: relative; z-index: 1;
+  padding: 120px 40px 140px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.cta-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: rgba(255,255,255,0.7);
+  display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+}
+.cta-eyebrow::before, .cta-eyebrow::after { content: ''; width: 20px; height: 1px; background: rgba(255,255,255,0.7); }
+.cta-headline {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 600; letter-spacing: -0.03em; line-height: 0.9;
+  color: white; margin-bottom: 16px;
+}
+.cta-sub {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.68); margin-bottom: 56px;
+}
+
+/* Inline contact form */
+.cta-form {
+  width: 100%; max-width: 560px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.cta-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.cta-input {
+  width: 100%; padding: 14px 18px;
+  background: var(--frost-noise) center/300px 300px, rgba(255,255,255,0.14);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.28);
+  border-top-color: rgba(255,255,255,0.55);
+  box-shadow: 0 2px 0 rgba(255,255,255,0.3) inset;
+  border-radius: var(--r-md);
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px;
+  color: white; outline: none;
+  transition: border-color 0.25s, background 0.25s;
+  margin-bottom: 10px;
+}
+.cta-form-row .cta-input { margin-bottom: 0; }
+.cta-input::placeholder { color: rgba(255,255,255,0.35); }
+.cta-input:focus { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.2); }
+.cta-textarea {
+  resize: none; height: 110px;
+}
+.cta-form-submit {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 8px;
+}
+.cta-form-note {
+  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.6); text-transform: uppercase;
+}
+.cta-send-btn {
+  background: var(--accent); color: rgba(255,255,255,0.95);
+  padding: 14px 36px; border-radius: var(--r-full); border: none;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 11px;
+  font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 6px 24px rgba(71,58,49,0.28);
+}
+.cta-send-btn:hover { background: var(--ink); transform: translateY(-2px); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .hero-right { display: none; }
+  .hero-left { padding: 100px 24px 60px; max-width: 100%; }
+  .hero-logo-text { font-size: clamp(48px, 12vw, 80px); }
+  .hero-left { text-align: center; align-items: center; min-height: 100vh; }
+  .hero-tagline { text-align: center; }
+  #hero-cards-section { padding: 60px 20px 80px; }
+  .hero-cards { grid-template-columns: 1fr; max-width: 400px; }
+  .hc:nth-child(2), .hc:nth-child(3) { margin-top: 0; }
+  .srv-header-row { padding: 24px 20px; grid-template-columns: 36px 1fr auto; gap: 16px; }
+  .srv-body-inner { padding: 0 20px 28px; grid-template-columns: 1fr; gap: 16px; }
+  .vis-grid { grid-template-columns: 1fr; }
+  .vis-card.tall { grid-row: span 1; min-height: 320px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-stats { grid-template-columns: repeat(2,1fr); }
+  .proc-grid { grid-template-columns: repeat(2,1fr); }
+  .cta-h { font-size: clamp(40px, 10vw, 80px); }
+  .hero-stats { flex-wrap: wrap; border-radius: var(--r-lg); }
+}
+@media (max-width: 600px) {
+  #services, #visuals, #about, #process, #cta { padding-left: 20px; padding-right: 20px; }
+  .proc-grid { grid-template-columns: 1fr; }
+  .about-stats { grid-template-columns: repeat(2,1fr); }
+  .srv-header-row { grid-template-columns: 28px 1fr auto; }
+}
+</style>
+</head>
+<body>
+
+<div id="bg-mesh"></div>
+
+<!-- VIDEO BACKGROUND -->
+<video id="bg-video" autoplay muted loop playsinline>
+  <source src="images/chain-video.mov" type="video/quicktime">
+  <source src="images/chain-video.mov" type="video/mp4">
+</video>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo-text">The Label Dept</span>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+  </div>
+  <a href="contact.html" class="nav-cta">Projekt starten</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+
+  <!-- LEFT: Text content -->
+  <div class="hero-left">
+    <div class="hero-status">
+      <span class="status-dot"></span>
+      Verfügbar für neue Projekte
+    </div>
+    <div class="hero-logo-wrap">
+      <div class="hero-logo-text">The<br>Label<br>Dept</div>
+    </div>
+    <p class="hero-tagline">Webdesign · App-Entwicklung<br>KI-Kampagnen · Markenstrategie</p>
+    <div class="hero-ctas">
+      <a href="contact.html" class="btn-main">Projekt anfragen</a>
+      <a href="portfolio.html" class="btn-ghost">Portfolio</a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Editorial photo bleed -->
+  <div class="hero-right">
+    <div class="hero-photo-frame">
+      <div class="hero-photo-img">
+        <img src="images/founder.jpg" alt="Katrin Guerrero — The Label Dept" class="hero-photo">
+      </div>
+      <div class="hero-photo-caption">
+        <div class="hero-photo-name">Katrin Guerrero</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="mi">Webdesign <span class="msep">✦</span></span>
+    <span class="mi">App-Entwicklung <span class="msep">✦</span></span>
+    <span class="mi">KI-Kampagnen <span class="msep">✦</span></span>
+    <span class="mi">Markenstrategie <span class="msep">✦</span></span>
+    <span class="mi">Webdesign <span class="msep">✦</span></span>
+    <span class="mi">App-Entwicklung <span class="msep">✦</span></span>
+    <span class="mi">KI-Kampagnen <span class="msep">✦</span></span>
+    <span class="mi">Markenstrategie <span class="msep">✦</span></span>
+  </div>
+</div>
+
+<!-- SERVICE CARDS (below hero) -->
+<section id="hero-cards-section">
+  <div class="hero-cards">
+    <div class="hc glass">
+      <div class="hc-ghost-num" aria-hidden="true">01</div>
+      <div class="hc-badge">01</div>
+      <div class="hc-title">Webdesign &amp; Development</div>
+      <p class="hc-desc">Maßgeschneiderte Websites mit glasklarem Design und echter Konversionsstärke.</p>
+      <div class="hc-foot">
+        <span class="hc-foot-label">Mehr erfahren</span>
+        <a href="services.html" class="hc-arrow">→</a>
+      </div>
+    </div>
+    <div class="hc glass-dk">
+      <div class="hc-ghost-num" aria-hidden="true">02</div>
+      <div class="hc-badge">02</div>
+      <div class="hc-title">App-Entwicklung</div>
+      <p class="hc-desc">Native und hybride Apps für iOS &amp; Android — skalierbar und intuitiv.</p>
+      <div class="hc-foot">
+        <span class="hc-foot-label">Mehr erfahren</span>
+        <a href="services.html" class="hc-arrow">→</a>
+      </div>
+    </div>
+    <div class="hc glass">
+      <div class="hc-ghost-num" aria-hidden="true">03</div>
+      <div class="hc-badge">03</div>
+      <div class="hc-title">KI-Werbekampagnen</div>
+      <p class="hc-desc">KI-generierte Fotos &amp; Visuals für Ads, Social Media und Kampagnen — professionell, schnell und maßgeschneidert.</p>
+      <div class="hc-foot">
+        <span class="hc-foot-label">Mehr erfahren</span>
+        <a href="services.html" class="hc-arrow">→</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hs-item"><div class="hs-n">48+</div><div class="hs-l">Projekte</div></div>
+    <div class="hs-item"><div class="hs-n">97%</div><div class="hs-l">Zufriedenheit</div></div>
+    <div class="hs-item"><div class="hs-n">4 Wo</div><div class="hs-l">Ø Lieferzeit</div></div>
+    <div class="hs-item"><div class="hs-n">Alle</div><div class="hs-l">Branchen</div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="srv-top r">
+    <div>
+      <div class="sec-label">Was wir tun</div>
+      <h2 class="sec-h">Leistungen</h2>
+    </div>
+    <p class="srv-sub">Wir begleiten euer Projekt von der ersten Idee bis zum fertigen Produkt.</p>
+  </div>
+
+  <div class="srv-list">
+    <div class="srv-item r">
+      <div class="srv-header-row">
+        <span class="srv-num">01</span>
+        <span class="srv-title">Webdesign &amp; Development</span>
+        <span class="srv-plus">+</span>
+      </div>
+      <div class="srv-body">
+        <div class="srv-body-inner">
+          <p class="srv-desc">Wir bauen Websites, die nicht nur schön aussehen, sondern echte Ergebnisse liefern. Sauberer Code, optimierte Performance und durchdachte UX — für Besucher, die zu Kunden werden.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">Figma</span>
+            <span class="srv-tag">React</span>
+            <span class="srv-tag">Next.js</span>
+            <span class="srv-tag">CMS</span>
+            <span class="srv-tag">Webflow</span>
+            <span class="srv-tag">TypeScript</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="srv-item r">
+      <div class="srv-header-row">
+        <span class="srv-num">02</span>
+        <span class="srv-title">App-Entwicklung</span>
+        <span class="srv-plus">+</span>
+      </div>
+      <div class="srv-body">
+        <div class="srv-body-inner">
+          <p class="srv-desc">Native und Cross-Platform Apps für iOS und Android — designed mit Nutzern im Mittelpunkt. Von UX-Research über Prototyping bis zum App-Store-Release.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">React Native</span>
+            <span class="srv-tag">Swift</span>
+            <span class="srv-tag">Flutter</span>
+            <span class="srv-tag">Supabase</span>
+            <span class="srv-tag">ASO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="srv-item r">
+      <div class="srv-header-row">
+        <span class="srv-num">03</span>
+        <span class="srv-title">KI-Werbekampagnen</span>
+        <span class="srv-plus">+</span>
+      </div>
+      <div class="srv-body">
+        <div class="srv-body-inner">
+          <p class="srv-desc">KI-generierte Fotos und Visuals für Werbekampagnen, Social Ads und Produktshots — schneller, günstiger und kreativer als klassische Fotoproduktionen.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">OpenAI</span>
+            <span class="srv-tag">Claude</span>
+            <span class="srv-tag">RAG</span>
+            <span class="srv-tag">n8n</span>
+            <span class="srv-tag">Make</span>
+            <span class="srv-tag">Zapier</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="srv-item r">
+      <div class="srv-header-row">
+        <span class="srv-num">04</span>
+        <span class="srv-title">Markenstrategie</span>
+        <span class="srv-plus">+</span>
+      </div>
+      <div class="srv-body">
+        <div class="srv-body-inner">
+          <p class="srv-desc">Logo, Farbwelt, Typografie — wir entwickeln eine unverwechselbare visuelle Identität, die Persönlichkeit hat und langfristig in Erinnerung bleibt.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">Logo</span>
+            <span class="srv-tag">Brand Guide</span>
+            <span class="srv-tag">Motion</span>
+            <span class="srv-tag">Illustration</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VISUALS -->
+<section id="visuals">
+  <div class="r">
+    <div class="sec-label">Digitale Welten</div>
+    <h2 class="sec-h">Web. App. <span>KI.</span></h2>
+  </div>
+  <div class="vis-grid">
+
+    <!-- Webdesign card (tall) -->
+    <div class="vis-card glass tall r">
+      <div class="wdc-orb1"></div>
+      <div class="wdc-orb2"></div>
+      <div class="wdc-orb3"></div>
+      <div>
+        <div class="vis-card-label">Webdesign</div>
+        <div class="vis-card-title">Websites, die<br>begeistern —<br><span style="color:rgba(255,255,255,0.38);font-size:0.72em;">für jedes Budget.</span></div>
+        <p class="vis-card-desc">Glass-Morphism, 3D-Tilt-Effekte, Scroll-Animationen — Websites, die man nicht vergisst. Handgebaut in VS Code, kein Template.</p>
+        <div class="vis-tags">
+          <span class="vis-tag">Next.js</span>
+          <span class="vis-tag">Framer</span>
+          <span class="vis-tag">GSAP</span>
+          <span class="vis-tag">VS Code</span>
+        </div>
+      </div>
+      <a href="portfolio.html" class="vis-card-cta">Portfolio ansehen →</a>
+      <!-- Website browser mockup -->
+      <div class="web-mockup">
+        <div class="wm-bar">
+          <div class="wm-dot r"></div>
+          <div class="wm-dot y"></div>
+          <div class="wm-dot g"></div>
+          <div class="wm-url">thelabeldept.de</div>
+        </div>
+        <div class="wm-body">
+          <div class="wm-nav">
+            <div class="wm-nav-bar active"></div>
+            <div class="wm-nav-bar" style="width:14px"></div>
+            <div class="wm-nav-bar" style="width:18px"></div>
+            <div class="wm-nav-bar" style="width:14px"></div>
+            <div class="wm-nav-bar" style="width:10px"></div>
+            <div style="margin-left:auto;width:28px;height:10px;border-radius:5px;background:var(--accent);opacity:0.85;"></div>
+          </div>
+          <div class="wm-hero">
+            <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
+              <div class="wm-hero-text">The Label<br>Dept</div>
+              <div style="font-family:'DM Mono',monospace;font-size:4.5px;color:rgba(255,255,255,0.35);letter-spacing:0.08em;">Digital Studio · Nürtingen</div>
+            </div>
+            <div style="display:flex;gap:3px;align-items:center;">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);"></div>
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(71,58,49,0.6);border:1px solid rgba(255,255,255,0.15);"></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+            <div style="height:32px;border-radius:6px;background:linear-gradient(135deg,rgba(71,58,49,0.4),rgba(30,25,20,0.6));border:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-end;padding:4px 6px;">
+              <div style="font-family:'DM Mono',monospace;font-size:4px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;">Webdesign</div>
+            </div>
+            <div style="height:32px;border-radius:6px;background:linear-gradient(135deg,rgba(40,35,30,0.5),rgba(20,18,15,0.7));border:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-end;padding:4px 6px;">
+              <div style="font-family:'DM Mono',monospace;font-size:4px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;">App Dev</div>
+            </div>
+            <div style="height:32px;border-radius:6px;background:linear-gradient(135deg,rgba(30,25,20,0.5),rgba(50,40,30,0.5));border:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-end;padding:4px 6px;">
+              <div style="font-family:'DM Mono',monospace;font-size:4px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;">KI</div>
+            </div>
+            <div style="height:32px;border-radius:6px;background:linear-gradient(135deg,rgba(60,50,40,0.35),rgba(25,20,16,0.6));border:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-end;padding:4px 6px;">
+              <div style="font-family:'DM Mono',monospace;font-size:4px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;">Branding</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:4px;align-items:center;margin-top:2px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.12);"></div>
+            <div style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);"><div style="width:65%;height:100%;border-radius:2px;background:var(--accent);opacity:0.7;"></div></div>
+            <div style="font-family:'DM Mono',monospace;font-size:4px;color:rgba(255,255,255,0.25);">65%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- App card -->
+    <div class="vis-card glass r">
+      <div class="app-phone">
+        <div class="app-phone-notch"></div>
+        <div class="app-phone-body">
+          <!-- Status bar -->
+          <div class="aph-statusbar">
+            <span class="aph-time">9:41</span>
+            <div class="aph-icons">
+              <div class="aph-icon"></div>
+              <div class="aph-icon"></div>
+              <div class="aph-icon bat"></div>
+            </div>
+          </div>
+          <!-- Profile -->
+          <div class="aph-header">
+            <div class="aph-avatar"></div>
+            <div class="aph-user">
+              <div class="aph-name">Katrin G.</div>
+              <div class="aph-sub">Dashboard</div>
+            </div>
+          </div>
+          <!-- Hero card -->
+          <div class="aph-img-card">
+            <span class="aph-img-label">Kampagne Q2</span>
+            <span class="aph-img-badge">Live ✦</span>
+          </div>
+          <!-- Stats -->
+          <div class="aph-stats">
+            <div class="aph-stat">
+              <div class="aph-stat-n">4.8k</div>
+              <div class="aph-stat-l">Reach</div>
+            </div>
+            <div class="aph-stat">
+              <div class="aph-stat-n">312</div>
+              <div class="aph-stat-l">Clicks</div>
+            </div>
+            <div class="aph-stat">
+              <div class="aph-stat-n">92%</div>
+              <div class="aph-stat-l">Score</div>
+            </div>
+          </div>
+          <!-- List -->
+          <div class="aph-list">
+            <div class="aph-list-item">
+              <div class="aph-dot green"></div>
+              <div class="aph-list-text">
+                <div class="aph-list-title">Brand Shoot</div>
+                <div class="aph-list-meta">Heute · 14:00</div>
+              </div>
+              <div class="aph-list-val">+24%</div>
+            </div>
+            <div class="aph-list-item">
+              <div class="aph-dot brown"></div>
+              <div class="aph-list-text">
+                <div class="aph-list-title">Social Ads</div>
+                <div class="aph-list-meta">Morgen · 10:00</div>
+              </div>
+              <div class="aph-list-val">+11%</div>
+            </div>
+            <div class="aph-list-item">
+              <div class="aph-dot grey"></div>
+              <div class="aph-list-text">
+                <div class="aph-list-title">Webdesign</div>
+                <div class="aph-list-meta">Fr · Abgabe</div>
+              </div>
+              <div class="aph-list-val">→</div>
+            </div>
+          </div>
+          <!-- Bottom nav -->
+          <div class="aph-nav">
+            <div class="aph-nav-dot active"></div>
+            <div class="aph-nav-dot"></div>
+            <div class="aph-nav-dot"></div>
+            <div class="aph-nav-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="vis-card-label">App-Entwicklung</div>
+        <div class="vis-card-title">Apps für jeden<br>Bildschirm</div>
+        <p class="vis-card-desc">iOS, Android, Web — aus einem Guss, mit nativer Performance.</p>
+      </div>
+      <a href="services.html" class="vis-card-cta">Mehr erfahren →</a>
+    </div>
+
+    <!-- AI card -->
+    <div class="vis-card glass r" style="position:relative;">
+      <canvas id="ai-canvas"></canvas>
+      <div style="position:relative;z-index:2;">
+        <div class="vis-card-label">KI-Integration</div>
+        <div class="vis-card-title">Intelligenz,<br>die wirkt</div>
+        <p class="vis-card-desc">Wir bauen mit OpenAI, Claude &amp; Co. — für smarte Produkte von morgen.</p>
+      </div>
+      <a href="services.html#ki" class="vis-card-cta" style="position:relative;z-index:2;">KI-Leistungen →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="rl">
+      <div class="about-lbl">Studio</div>
+      <h2 class="about-h">Ich baue<br><em>Digitales</em><br>das bleibt.</h2>
+    </div>
+    <div class="rr about-r">
+      <p>Mein Anspruch: <strong>Design und Technologie zusammendenken</strong>. Kein Template-Kram, kein Outsourcing — jedes Projekt bekommt meine volle Aufmerksamkeit.</p>
+      <div class="about-quote">"Erst verstehen. Dann gestalten. Immer liefern."</div>
+    </div>
+  </div>
+  <div class="about-stats">
+    <div class="astat r"><div class="astat-n">48+</div><div class="astat-l">Projekte</div></div>
+    <div class="astat r"><div class="astat-n">97%</div><div class="astat-l">Zufriedenheit</div></div>
+    <div class="astat r"><div class="astat-n">4 J.</div><div class="astat-l">Erfahrung</div></div>
+    <div class="astat r"><div class="astat-n">Alle</div><div class="astat-l">Branchen</div></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="proc-head r">
+    <div>
+      <div class="sec-label">Wie wir arbeiten</div>
+      <h2 class="sec-h">Unser<br>Prozess</h2>
+    </div>
+    <p class="proc-sub">Vom ersten Gespräch bis zum Go-live — strukturiert, transparent und auf Augenhöhe.</p>
+  </div>
+  <div class="proc-grid">
+    <div class="proc-card glass r">
+      <div class="pc-num">01</div>
+      <h4>Discovery</h4>
+      <p>Wir lernen euer Business, eure Ziele und eure Zielgruppe kennen. Erst verstehen, dann gestalten.</p>
+    </div>
+    <div class="proc-card glass r">
+      <div class="pc-num">02</div>
+      <h4>Konzept &amp; Design</h4>
+      <p>Wireframes, Moodboard und High-Fidelity Prototypen in Figma — ihr seht alles, bevor Code entsteht.</p>
+    </div>
+    <div class="proc-card glass r">
+      <div class="pc-num">03</div>
+      <h4>Entwicklung</h4>
+      <p>Sauber strukturierter Code, moderne Frameworks, agile Sprints. Schnell und zuverlässig.</p>
+    </div>
+    <div class="proc-card glass r">
+      <div class="pc-num">04</div>
+      <h4>Launch &amp; Support</h4>
+      <p>Deployment, SEO-Setup, Analytics — und danach stehen wir als Partner weiter an eurer Seite.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-eyebrow">Nächster Schritt</div>
+  <h2 class="cta-headline">Lass uns zusammen<br>etwas bauen.</h2>
+  <p class="cta-sub">Kostenloses Erstgespräch · 30 Minuten · unverbindlich</p>
+
+  <form class="cta-form" id="contact-form">
+    <div class="cta-form-row">
+      <input class="cta-input" type="text" placeholder="Dein Name" required>
+      <input class="cta-input" type="email" placeholder="E-Mail-Adresse" required>
+    </div>
+    <input class="cta-input" type="text" placeholder="Betreff / Projektidee">
+    <textarea class="cta-input cta-textarea" placeholder="Erzähl mir von deinem Projekt…"></textarea>
+    <div class="cta-form-submit">
+      <span class="cta-form-note">Antworte innerhalb 24h</span>
+      <button type="submit" class="cta-send-btn">Absenden →</button>
+    </div>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="f-logo-text">The Label Dept</span>
+  <div class="f-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+    <a href="impressum.html">Impressum</a>
+  </div>
+  <span class="f-copy">© 2025 The Label Dept · Nürtingen</span>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

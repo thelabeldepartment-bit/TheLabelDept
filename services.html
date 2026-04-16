@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leistungen — The Label Dept</title>
+<meta name="description" content="Webdesign, App-Entwicklung, KI-Integration, Branding und E-Commerce — maßgeschneidert für euer Business.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+/* ── Service Detail ── */
+.srv-detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  margin-bottom: 80px; align-items: stretch;
+}
+.srv-detail-grid:nth-child(even) .srv-detail-text { order: 2; }
+.srv-detail-grid:nth-child(even) .srv-detail-visual { order: 1; }
+
+.srv-detail-text {
+  border-radius: var(--r-xl); padding: 52px 48px;
+  display: flex; flex-direction: column; gap: 18px;
+  justify-content: center;
+}
+.srv-detail-icon { font-size: 3rem; }
+.srv-detail-num { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--mist); }
+.srv-detail-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(26px, 3.5vw, 44px); font-weight: 600;
+  letter-spacing: -0.02em; line-height: 1.0; color: var(--ink);
+}
+.srv-detail-desc { font-size: 14px; color: var(--mist); line-height: 1.8; }
+.srv-detail-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.srv-detail-list li {
+  font-size: 13px; color: var(--ink2);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.srv-detail-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-family: 'DM Mono', monospace; font-size: 11px; margin-top: 1px; }
+.srv-detail-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.srv-detail-visual {
+  border-radius: var(--r-xl); min-height: 280px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Clash Display', sans-serif; font-size: 7rem;
+  font-weight: 700; color: rgba(28,24,36,0.07);
+  position: relative; overflow: hidden;
+}
+.srv-detail-visual::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(71,58,49,0.15) 0%, transparent 70%);
+}
+.srv-detail-visual::after {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.9), transparent);
+}
+
+/* ── Preise Accordion ── */
+.price-item {
+  border-radius: var(--r-lg); margin-bottom: 10px; overflow: hidden;
+}
+.price-header {
+  width: 100%; display: grid; grid-template-columns: 40px 1fr auto auto;
+  align-items: center; padding: 22px 28px; gap: 20px;
+  cursor: pointer; text-align: left;
+}
+.price-num { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--mist); }
+.price-name { font-family: 'Clash Display', sans-serif; font-size: clamp(18px, 2.2vw, 28px); font-weight: 600; color: var(--ink); }
+.price-val { font-family: 'Clash Display', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.price-plus {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid rgba(28,24,36,0.14); background: rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--ink); transition: all 0.4s;
+}
+.price-item.open .price-plus { background: var(--ink); color: white; transform: rotate(45deg); }
+.price-body { overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+.price-body-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  padding: 0 28px 28px 88px;
+}
+.price-body p { font-size: 13px; color: var(--mist); line-height: 1.8; }
+.price-body ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.price-body li { font-size: 12px; color: var(--ink2); display: flex; gap: 8px; }
+.price-body li::before { content: '✦'; color: var(--accent); flex-shrink: 0; font-size: 8px; margin-top: 3px; }
+
+/* ── Tech Stack ── */
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+.tech-pill {
+  border-radius: var(--r-md); padding: 18px 12px; text-align: center;
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em;
+  color: var(--mist);
+  background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.82);
+  backdrop-filter: blur(10px);
+  transition: all 0.25s;
+}
+.tech-pill:hover { background: rgba(255,255,255,0.88); transform: translateY(-3px); color: var(--ink); }
+.tech-pill div:first-child { font-size: 22px; margin-bottom: 8px; }
+
+@media(max-width:860px){
+  .srv-detail-grid { grid-template-columns: 1fr; }
+  .srv-detail-grid:nth-child(even) .srv-detail-text { order: 1; }
+  .srv-detail-grid:nth-child(even) .srv-detail-visual { order: 2; }
+  .price-body-inner { grid-template-columns: 1fr; padding: 0 20px 24px; }
+  .price-header { grid-template-columns: 32px 1fr auto; }
+  .price-val { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="bg-mesh"></div>
+
+<nav>
+  <span class="nav-logo-text">The Label Dept</span>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+  </div>
+  <a href="contact.html" class="nav-cta">Projekt starten</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="sec-label r">Was ich tue</div>
+    <h1 class="sec-h r" style="margin-bottom:16px;">Leistungen</h1>
+    <p style="font-size:15px;color:var(--mist);line-height:1.7;max-width:520px;" class="r">Alles aus einer Hand — von der ersten Idee bis zum fertigen Produkt.<br>Kein Outsourcing, kein Durchreichen.</p>
+  </div>
+</div>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="mi">Webdesign <span class="msep">✦</span></span>
+    <span class="mi">App-Entwicklung <span class="msep">✦</span></span>
+    <span class="mi">KI-Integration <span class="msep">✦</span></span>
+    <span class="mi">Branding <span class="msep">✦</span></span>
+    <span class="mi">E-Commerce <span class="msep">✦</span></span>
+    <span class="mi">SEO &amp; Performance <span class="msep">✦</span></span>
+  </div>
+</div>
+
+<!-- Service Details -->
+<section class="section" id="web">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div class="srv-detail-grid">
+      <div class="srv-detail-text glass r">
+        <div class="srv-detail-icon">🌐</div>
+        <div class="srv-detail-num">01</div>
+        <div class="srv-detail-title">Webdesign &amp;<br>Development</div>
+        <p class="srv-detail-desc">Ich baue Websites, die nicht nur schön aussehen, sondern echte Ergebnisse liefern. Sauberer Code, optimierte Performance und durchdachte UX für Besucher, die zu Kunden werden.</p>
+        <ul class="srv-detail-list">
+          <li>Custom Design in VS Code — kein Template</li>
+          <li>Next.js / React mit CMS-Anbindung</li>
+          <li>Responsive für alle Geräteklassen</li>
+          <li>Core Web Vitals Optimierung</li>
+          <li>Individuelle Systeme (für alle Bedürfnisse)</li>
+        </ul>
+        <div class="srv-detail-tags">
+          <span class="tag-pill">React</span>
+          <span class="tag-pill">Next.js</span>
+          <span class="tag-pill">VS Code</span>
+          <span class="tag-pill">CMS</span>
+        </div>
+      </div>
+      <div class="srv-detail-visual glass r">🌐</div>
+    </div>
+
+    <div class="srv-detail-grid" id="app">
+      <div class="srv-detail-text glass r">
+        <div class="srv-detail-icon">📱</div>
+        <div class="srv-detail-num">02</div>
+        <div class="srv-detail-title">App-Entwicklung</div>
+        <p class="srv-detail-desc">Individuelle Apps und Systeme — gebaut in VS Code, maßgeschneidert für jede Branche. Von der Idee bis zum fertigen Produkt, inklusive Backend und allem, was dazugehört.</p>
+        <ul class="srv-detail-list">
+          <li>Individuelle Systeme für alle Branchen</li>
+          <li>Backend-Entwicklung &amp; API-Design</li>
+          <li>Cross-Platform Apps für iOS &amp; Android</li>
+          <li>Datenbanken, Integrationen &amp; Automatisierungen</li>
+          <li>Gebaut in VS Code — kein Low-Code, kein Template</li>
+        </ul>
+        <div class="srv-detail-tags">
+          <span class="tag-pill">VS Code</span>
+          <span class="tag-pill">React Native</span>
+          <span class="tag-pill">Backend</span>
+        </div>
+      </div>
+      <div class="srv-detail-visual glass r">📱</div>
+    </div>
+
+    <div class="srv-detail-grid" id="ki">
+      <div class="srv-detail-text glass r">
+        <div class="srv-detail-icon">🤖</div>
+        <div class="srv-detail-num">03</div>
+        <div class="srv-detail-title">KI &amp;<br>Automatisierung</div>
+        <p class="srv-detail-desc">Mein Schwerpunkt liegt auf KI-generierten Web-Kampagnen — Produktfotos, Photoshoots und visuellem Content, der aussieht wie echte Fotografie. Dazu integriere ich KI direkt in Apps und Websites.</p>
+        <ul class="srv-detail-list">
+          <li>KI-Produktfotos &amp; Photoshoots</li>
+          <li>AI Web-Kampagnen für Social &amp; E-Commerce</li>
+          <li>KI-Integration in Websites &amp; Apps</li>
+          <li>Automatisierte Content-Produktion</li>
+          <li>Visuelle Markenauftritte mit KI-Assets</li>
+        </ul>
+        <div class="srv-detail-tags">
+          <span class="tag-pill">AI Photos</span>
+          <span class="tag-pill">Kampagnen</span>
+          <span class="tag-pill">KI-Integration</span>
+        </div>
+      </div>
+      <div class="srv-detail-visual glass r">🤖</div>
+    </div>
+
+
+    <div class="srv-detail-grid" id="ecommerce">
+      <div class="srv-detail-text glass r">
+        <div class="srv-detail-icon">🛒</div>
+        <div class="srv-detail-num">05</div>
+        <div class="srv-detail-title">E-Commerce</div>
+        <p class="srv-detail-desc">Ich baue Shops, die verkaufen — komplett in VS Code, individuell entwickelt. Optimierte Checkout-Flows, durchdachte Produktpräsentation und nahtlose Zahlungsintegration für maximale Conversion.</p>
+        <ul class="srv-detail-list">
+          <li>Custom Shop-Entwicklung in VS Code</li>
+          <li>Shopify oder vollständig individuell — nach Bedarf</li>
+          <li>Produktkonfiguratoren</li>
+          <li>Stripe, PayPal, Klarna</li>
+          <li>Conversion Rate Optimierung</li>
+        </ul>
+        <div class="srv-detail-tags">
+          <span class="tag-pill">VS Code</span>
+          <span class="tag-pill">Shopify</span>
+          <span class="tag-pill">Stripe</span>
+        </div>
+      </div>
+      <div class="srv-detail-visual glass r">🛒</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Preise -->
+<section class="section" style="padding-top:0;" id="preise">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="sec-label r">Transparent &amp; fair</div>
+    <h2 class="sec-h r" style="margin-bottom:12px;">Pakete &amp; Preise</h2>
+    <p style="font-size:13px;color:var(--mist);line-height:1.75;max-width:480px;margin-bottom:48px;font-family:'DM Mono',monospace;" class="r">Jedes Projekt ist individuell. Diese Pakete sind eine Orientierung — kein Pauschalpaket passt? Ich erstelle ein Angebot auf Maß.</p>
+
+    <div class="price-item glass r srv-item">
+      <button class="price-header srv-header-row" style="display:grid;grid-template-columns:40px 1fr auto auto;gap:20px;padding:22px 28px;">
+        <span class="price-num srv-num">01</span>
+        <span class="price-name srv-title">Starter Website</span>
+        <span class="price-val" style="font-family:'Clash Display',sans-serif;font-size:1.2rem;font-weight:600;color:var(--ink);white-space:nowrap;">ab 1.800 €</span>
+        <span class="srv-plus">+</span>
+      </button>
+      <div class="price-body srv-body">
+        <div class="price-body-inner srv-body-inner">
+          <p class="srv-desc">Ideal für Selbstständige und kleine Unternehmen — professionell online auftreten ohne großes Budget.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">Bis 5 Unterseiten</span>
+            <span class="srv-tag">Custom Design</span>
+            <span class="srv-tag">Responsive</span>
+            <span class="srv-tag">SEO-ready</span>
+            <span class="srv-tag">4 Wo. Lieferzeit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-item glass r srv-item">
+      <button class="price-header srv-header-row" style="display:grid;grid-template-columns:40px 1fr auto auto;gap:20px;padding:22px 28px;">
+        <span class="price-num srv-num">02</span>
+        <span class="price-name srv-title">Business Website</span>
+        <span class="price-val" style="font-family:'Clash Display',sans-serif;font-size:1.2rem;font-weight:600;color:var(--ink);white-space:nowrap;">ab 3.500 €</span>
+        <span class="srv-plus">+</span>
+      </button>
+      <div class="price-body srv-body">
+        <div class="price-body-inner srv-body-inner">
+          <p class="srv-desc">Für wachsende Unternehmen, die eine starke digitale Präsenz benötigen — mit Fokus auf Conversion und Performance.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">Bis 12 Unterseiten</span>
+            <span class="srv-tag">Animiertes Design</span>
+            <span class="srv-tag">Blog / CMS</span>
+            <span class="srv-tag">Analytics</span>
+            <span class="srv-tag">3 Mo. Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-item glass r srv-item">
+      <button class="price-header srv-header-row" style="display:grid;grid-template-columns:40px 1fr auto auto;gap:20px;padding:22px 28px;">
+        <span class="price-num srv-num">03</span>
+        <span class="price-name srv-title">E-Commerce Shop</span>
+        <span class="price-val" style="font-family:'Clash Display',sans-serif;font-size:1.2rem;font-weight:600;color:var(--ink);white-space:nowrap;">ab 4.200 €</span>
+        <span class="srv-plus">+</span>
+      </button>
+      <div class="price-body srv-body">
+        <div class="price-body-inner srv-body-inner">
+          <p class="srv-desc">Maßgeschneiderter Shop mit optimiertem Checkout und allem, was ihr für erfolgreichen Online-Verkauf braucht.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">Shopify / Woo</span>
+            <span class="srv-tag">bis 200 Artikel</span>
+            <span class="srv-tag">Payment</span>
+            <span class="srv-tag">6 Mo. Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-item glass r srv-item">
+      <button class="price-header srv-header-row" style="display:grid;grid-template-columns:40px 1fr auto auto;gap:20px;padding:22px 28px;">
+        <span class="price-num srv-num">04</span>
+        <span class="price-name srv-title">Enterprise &amp; Custom</span>
+        <span class="price-val" style="font-family:'Clash Display',sans-serif;font-size:1.2rem;font-weight:600;color:var(--ink);white-space:nowrap;">Auf Anfrage</span>
+        <span class="srv-plus">+</span>
+      </button>
+      <div class="price-body srv-body">
+        <div class="price-body-inner srv-body-inner">
+          <p class="srv-desc">Für komplexe Projekte mit individuellen Anforderungen — KI-Integrationen, Custom Apps, große Plattformen.</p>
+          <div class="srv-tags">
+            <span class="srv-tag">Dediziertes Team</span>
+            <span class="srv-tag">KI &amp; Automation</span>
+            <span class="srv-tag">SLA</span>
+            <span class="srv-tag">Persönl. Ansprechpartner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="section" style="padding-top:0;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="sec-label r">Womit ich arbeite</div>
+    <h2 class="sec-h r" style="margin-bottom:40px;">Tech Stack</h2>
+    <div class="tech-grid">
+      <div class="tech-pill r"><div>⚛️</div>React</div>
+      <div class="tech-pill r"><div>▲</div>Next.js</div>
+      <div class="tech-pill r"><div>💻</div>VS Code</div>
+      <div class="tech-pill r"><div>📱</div>React Native</div>
+      <div class="tech-pill r"><div>🛒</div>Shopify</div>
+      <div class="tech-pill r"><div>🤖</div>OpenAI</div>
+      <div class="tech-pill r"><div>🔷</div>TypeScript</div>
+      <div class="tech-pill r"><div>🎯</div>Tailwind</div>
+      <div class="tech-pill r"><div>🗄️</div>Supabase</div>
+      <div class="tech-pill r"><div>🐙</div>GitHub</div>
+      <div class="tech-pill r"><div>🌐</div>Netlify</div>
+      <div class="tech-pill r"><div>✦</div>Claude</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:80px 40px 120px;text-align:center;position:relative;z-index:1;">
+  <div class="glass r" style="max-width:660px;margin:0 auto;border-radius:var(--r-xl);padding:52px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,0.95),transparent);"></div>
+    <div class="sec-label" style="justify-content:center;margin-bottom:16px;">Klingt nach deinem Projekt?</div>
+    <h2 style="font-family:'Clash Display',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-0.03em;color:var(--ink);margin-bottom:12px;line-height:1.0;">Lass uns reden.</h2>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mist);line-height:1.75;margin-bottom:32px;letter-spacing:0.04em;">Schildere mir deine Idee — ich melde mich innerhalb von 24h.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <a href="contact.html" class="btn-main">Anfrage stellen</a>
+      <a href="portfolio.html" class="btn-ghost">Portfolio ansehen</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="f-logo-text">The Label Dept</span>
+  <div class="f-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+    <a href="impressum.html">Impressum</a>
+  </div>
+  <span class="f-copy">© 2025 The Label Dept · Nürtingen</span>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

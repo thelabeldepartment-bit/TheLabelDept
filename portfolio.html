@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — The Label Dept</title>
+<meta name="description" content="Ausgewählte Projekte aus dem Studio The Label Dept.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+
+/* ══ PAGE BACKGROUND ══ */
+body {
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(71,58,49,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 60% at 85% 30%, rgba(45,35,28,0.24) 0%, transparent 55%),
+    #1a1410;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='300' height='300' filter='url(%23n)' opacity='0.07'/></svg>") center/300px 300px;
+}
+
+/* ══ NAV overrides for dark bg ══ */
+nav { background: var(--frost-noise) center/300px 300px, rgba(255,255,255,0.10) !important; border-color: rgba(255,255,255,0.14) !important; border-top-color: rgba(255,255,255,0.22) !important; box-shadow: 0 2px 0 rgba(255,255,255,0.08) inset, 0 20px 50px rgba(0,0,0,0.3) !important; }
+.nav-logo-text { color: rgba(255,255,255,0.85) !important; }
+.nav-links a { color: rgba(255,255,255,0.45) !important; }
+.nav-links a:hover, .nav-links a.active { color: white !important; background: rgba(255,255,255,0.1) !important; }
+.nav-divider { background: rgba(255,255,255,0.12) !important; }
+
+/* ══ HERO ══ */
+.page-hero { padding-bottom: 60px; }
+.page-hero .sec-label { color: rgba(255,255,255,0.35); }
+.page-hero .sec-label::before { background: rgba(255,255,255,0.35); }
+.page-hero .sec-h { color: white; }
+.page-hero p { color: rgba(255,255,255,0.45); }
+
+/* ══ FOOTER ══ */
+footer { background: rgba(255,255,255,0.04) !important; border-top: 1px solid rgba(255,255,255,0.07); }
+.f-logo-text { color: rgba(255,255,255,0.22) !important; }
+.f-links a { color: rgba(255,255,255,0.18) !important; }
+.f-links a:hover { color: rgba(255,255,255,0.5) !important; }
+.f-copy { color: rgba(255,255,255,0.1) !important; }
+
+/* ══ MARQUEE ══ */
+.marquee {
+  background: rgba(255,255,255,0.04) !important;
+  border-top-color: rgba(255,255,255,0.08) !important;
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+  box-shadow: none !important;
+}
+.mi { color: rgba(255,255,255,0.22) !important; }
+.mi b { color: rgba(255,255,255,0.5) !important; }
+
+/* ══ FILTER ══ */
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 48px; }
+.filter-btn {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 8px 20px; border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s;
+}
+.filter-btn:hover { background: rgba(255,255,255,0.11); color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.2); }
+.filter-btn.active { background: var(--accent); border-color: transparent; color: rgba(255,255,255,0.95); box-shadow: 0 4px 16px rgba(0,0,0,0.35); }
+
+/* ══ GRID ══ */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+/* ══ CARD ══ */
+.portfolio-item {
+  border-radius: var(--r-xl); overflow: hidden;
+  cursor: pointer; transition: opacity 0.4s ease, transform 0.4s ease;
+  transform-style: preserve-3d; position: relative;
+}
+.portfolio-item.glass {
+  background: var(--frost-noise) center/300px 300px, rgba(255,255,255,0.48);
+  backdrop-filter: blur(32px) saturate(2.2);
+  -webkit-backdrop-filter: blur(32px) saturate(2.2);
+  border: 1px solid rgba(255,255,255,0.85);
+  border-top-color: white;
+  box-shadow: 0 2px 0 white inset, 0 24px 60px rgba(0,0,0,0.4);
+}
+.portfolio-item.dragging { opacity: 0.2; transform: scale(0.97); cursor: grabbing; }
+.portfolio-item.drag-over { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 3px; }
+
+.drag-handle {
+  position: absolute; top: 10px; left: 10px; z-index: 10;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(0,0,0,0.35); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s; cursor: grab;
+  color: rgba(255,255,255,0.75); font-size: 13px; line-height: 1;
+}
+.portfolio-item:hover .drag-handle { opacity: 1; }
+.drag-handle:active { cursor: grabbing; }
+
+/* ══ THUMBNAIL ══ */
+.portfolio-thumb {
+  aspect-ratio: 4/3;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.portfolio-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.portfolio-item:hover .portfolio-thumb img { transform: scale(1.04); }
+.portfolio-thumb-lbl {
+  font-family: 'Clash Display', sans-serif; font-size: 3.5rem;
+  font-weight: 700; color: rgba(28,24,36,0.12); letter-spacing: 0.04em;
+  transition: transform 0.4s ease; position: relative; z-index: 1;
+}
+.portfolio-item:hover .portfolio-thumb-lbl { transform: scale(1.08); }
+.portfolio-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,8,6,0.72) 0%, transparent 55%);
+  opacity: 0; transition: opacity 0.35s ease;
+  padding: 28px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 2;
+}
+.portfolio-item:hover .portfolio-overlay { opacity: 1; }
+.portfolio-overlay-cat { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
+.portfolio-overlay-title { font-family: 'Clash Display', sans-serif; font-size: 1.3rem; font-weight: 600; color: white; }
+.portfolio-pdf-badge {
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  background: rgba(26,20,16,0.72); backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.75);
+  font-family: 'DM Mono', monospace; font-size: 7px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 4px 10px; border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+/* ══ CARD INFO ══ */
+.portfolio-info {
+  padding: 22px 26px 26px;
+  background: rgba(255,255,255,0.42);
+}
+.portfolio-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.portfolio-cat {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 11px; border-radius: var(--r-full);
+  background: rgba(71,58,49,0.12); color: var(--accent);
+}
+.portfolio-year { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--mist); }
+.portfolio-name { font-family: 'Clash Display', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.15; }
+.portfolio-desc { font-size: 12.5px; color: var(--mist); line-height: 1.65; margin-bottom: 14px; }
+.portfolio-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.portfolio-tag {
+  font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: 0.08em;
+  padding: 3px 10px; border-radius: var(--r-full);
+  background: rgba(71,58,49,0.08); border: 1px solid rgba(71,58,49,0.14); color: var(--mist);
+}
+
+/* ══ COLOUR PALETTES ══ */
+.c-violet { background: linear-gradient(135deg,#f5f0ed,#e8ddd8); }
+.c-sky    { background: linear-gradient(135deg,#ede8e5,#ddd5cf); }
+.c-peach  { background: linear-gradient(135deg,#f0ebe7,#e0d5ce); }
+.c-mint   { background: linear-gradient(135deg,#ece7e4,#dbd3ce); }
+.c-rose   { background: linear-gradient(135deg,#f2eeeb,#e5dcd7); }
+.c-sand   { background: linear-gradient(135deg,#ede9e6,#ddd5cf); }
+.c-steel  { background: linear-gradient(135deg,#e8e4e1,#d8d0ca); }
+.c-green  { background: linear-gradient(135deg,#ebe7e4,#dbd3cd); }
+
+/* ── Project Viewer Modal ── */
+.proj-modal {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(10,9,8,0.97);
+  backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.proj-modal.open { opacity: 1; pointer-events: all; }
+
+.proj-modal-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.proj-modal-info { display: flex; flex-direction: column; gap: 3px; }
+.proj-modal-title { font-family: 'Clash Display', sans-serif; font-size: 17px; font-weight: 600; color: white; }
+.proj-modal-meta { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+.proj-modal-close {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  color: white; font-size: 18px; cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.proj-modal-close:hover { background: rgba(255,255,255,0.14); }
+.proj-modal-body {
+  flex: 1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.proj-modal-body embed,
+.proj-modal-body iframe { width: 100%; height: 100%; border: none; }
+.proj-modal-body img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.proj-modal-empty {
+  text-align: center; padding: 40px;
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25); line-height: 2;
+}
+
+/* ── Crop Editor ── */
+#crop-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.88); backdrop-filter: blur(20px);
+  display: none; align-items: center; justify-content: center; flex-direction: column;
+  gap: 20px;
+}
+#crop-overlay.open { display: flex; }
+#crop-frame {
+  width: 320px; height: 240px; /* 4:3, matches card */
+  border-radius: 14px; overflow: hidden; position: relative;
+  border: 2px solid rgba(255,255,255,0.3);
+  cursor: grab; user-select: none;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+}
+#crop-frame:active { cursor: grabbing; }
+#crop-frame::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px) 0 0 / 40px 40px,
+              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px) 0 0 / 40px 40px;
+}
+#crop-img-el {
+  position: absolute; transform-origin: center center;
+  pointer-events: none; will-change: transform;
+}
+.crop-controls {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; width: 320px;
+}
+.crop-zoom-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+}
+.crop-zoom-row span {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.4);
+  letter-spacing: 0.08em; min-width: 28px; text-align: center;
+}
+#crop-zoom {
+  flex: 1; -webkit-appearance: none; height: 3px;
+  background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; cursor: pointer;
+}
+#crop-zoom::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.crop-hint {
+  font-family: 'DM Mono', monospace; font-size: 8px; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.1em; text-align: center;
+}
+.crop-btns { display: flex; gap: 10px; width: 320px; }
+.crop-btns button {
+  flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.2s;
+}
+#crop-cancel-btn { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+#crop-cancel-btn:hover { background: rgba(255,255,255,0.14); }
+#crop-confirm-btn { background: var(--accent); color: rgba(255,255,255,0.95); }
+#crop-confirm-btn:hover { background: #5a4a3f; }
+
+/* ── Admin Panel ── */
+.admin-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 380px; z-index: 9998;
+  background: rgba(10,9,8,0.96);
+  backdrop-filter: blur(40px) saturate(1.5);
+  border-left: 1px solid rgba(255,255,255,0.1);
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.2,0,0.2,1);
+}
+.admin-panel.open { transform: translateX(0); }
+
+.admin-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.admin-header h3 { font-family: 'Clash Display', sans-serif; font-size: 15px; font-weight: 600; color: white; }
+.admin-close-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  color: white; font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.admin-close-btn:hover { background: rgba(255,255,255,0.14); }
+
+.admin-scroll { flex: 1; overflow-y: auto; padding: 20px 24px 32px; }
+.admin-scroll::-webkit-scrollbar { width: 3px; }
+.admin-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.admin-lbl {
+  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.26em;
+  text-transform: uppercase; color: rgba(255,255,255,0.28);
+  margin-bottom: 12px; margin-top: 20px;
+}
+.admin-lbl:first-child { margin-top: 0; }
+
+.admin-input {
+  width: 100%; padding: 11px 13px; margin-bottom: 9px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 12px;
+  color: white; outline: none; transition: border-color 0.2s, background 0.2s;
+}
+.admin-input::placeholder { color: rgba(255,255,255,0.24); }
+.admin-input:focus { border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.09); }
+select.admin-input { appearance: none; cursor: pointer; }
+
+.admin-file-btn {
+  display: block; width: 100%; padding: 11px 13px; margin-bottom: 9px;
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed rgba(255,255,255,0.16); border-radius: 10px;
+  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.38); cursor: pointer; text-align: center;
+  transition: all 0.2s;
+}
+.admin-file-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.65); border-color: rgba(255,255,255,0.28); }
+.admin-file-btn.has-file { border-style: solid; border-color: rgba(71,58,49,0.6); color: rgba(255,180,100,0.7); background: rgba(71,58,49,0.1); }
+input[type="file"].admin-file-input { display: none; }
+
+.admin-btn {
+  width: 100%; padding: 13px;
+  background: var(--accent); color: rgba(255,255,255,0.95);
+  border: none; border-radius: 10px;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 11px;
+  font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.25s; margin-top: 4px;
+}
+.admin-btn:hover { background: #5a4a3f; transform: translateY(-1px); }
+.admin-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.admin-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 20px 0; }
+
+.admin-proj-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 11px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 7px;
+}
+.admin-proj-name { font-family: 'Cabinet Grotesk', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.82); }
+.admin-proj-meta { font-family: 'DM Mono', monospace; font-size: 7.5px; letter-spacing: 0.1em; color: rgba(255,255,255,0.25); text-transform: uppercase; margin-top: 2px; }
+.admin-del {
+  padding: 5px 10px; border-radius: 6px; flex-shrink: 0;
+  background: rgba(200,50,50,0.1); border: 1px solid rgba(200,50,50,0.18);
+  color: rgba(220,100,100,0.75); font-family: 'DM Mono', monospace;
+  font-size: 7.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.admin-del:hover { background: rgba(200,50,50,0.2); color: rgba(255,130,130,0.9); }
+
+.admin-empty { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: rgba(255,255,255,0.18); text-align: center; padding: 18px 0; }
+.admin-hint { font-family: 'DM Mono', monospace; font-size: 7.5px; letter-spacing: 0.08em; color: rgba(255,255,255,0.15); text-align: center; padding-top: 20px; line-height: 1.9; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo-text">The Label Dept</span>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+  </div>
+  <a href="contact.html" class="nav-cta">Projekt starten</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="sec-label r">Ausgewählte Arbeiten</div>
+    <h1 class="sec-h r" style="margin-bottom:16px;">Portfolio</h1>
+    <p class="r" style="font-size:15px;line-height:1.7;max-width:520px;">Projekte aus der Praxis. Handgebaut in VS Code — kein Template, kein Copy-Paste.</p>
+  </div>
+</div>
+
+<div class="marquee">
+  <div class="marquee-track" id="marquee-track"></div>
+</div>
+
+<section class="section">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <div class="filter-bar r">
+      <button class="filter-btn active" data-filter="all">Alle</button>
+      <button class="filter-btn" data-filter="web">Web</button>
+      <button class="filter-btn" data-filter="app">App</button>
+      <button class="filter-btn" data-filter="ki">KI</button>
+      <button class="filter-btn" data-filter="ki-kampagnen">KI-Kampagnen</button>
+      <button class="filter-btn" data-filter="branding">Branding</button>
+      <button class="filter-btn" data-filter="markenstrategie">Markenstrategie</button>
+    </div>
+
+    <div class="portfolio-grid" id="portfolio-grid"></div>
+  </div>
+</section>
+
+<!-- PROJECT VIEWER MODAL -->
+<div class="proj-modal" id="proj-modal">
+  <div class="proj-modal-bar">
+    <div class="proj-modal-info">
+      <div class="proj-modal-title" id="modal-title"></div>
+      <div class="proj-modal-meta" id="modal-meta"></div>
+    </div>
+    <button class="proj-modal-close" id="modal-close">×</button>
+  </div>
+  <div class="proj-modal-body" id="modal-body"></div>
+</div>
+
+<!-- ADMIN PANEL (Ctrl+Shift+A) -->
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-header">
+    <h3>Portfolio Manager</h3>
+    <button class="admin-close-btn" id="admin-close">×</button>
+  </div>
+  <div style="padding:12px 24px;background:rgba(180,40,40,0.12);border-bottom:1px solid rgba(180,40,40,0.2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(220,80,80,0.7);">Speicher leeren</span>
+    <button id="admin-reset-top" style="padding:6px 14px;background:rgba(180,40,40,0.25);border:1px solid rgba(200,60,60,0.4);border-radius:6px;color:rgba(255,100,100,0.85);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Alles löschen &amp; neu starten</button>
+  </div>
+
+  <div class="admin-scroll" id="admin-scroll">
+
+    <div class="admin-lbl" id="form-lbl">Neues Projekt</div>
+    <form id="admin-form" autocomplete="off">
+      <input type="hidden" id="proj-edit-id">
+      <input class="admin-input" type="text" id="proj-title" placeholder="Projektname *" required>
+      <input class="admin-input" type="text" id="proj-client" placeholder="Kunde / Auftraggeber">
+      <textarea class="admin-input" id="proj-desc" placeholder="Kurze Beschreibung" rows="3" style="resize:none;"></textarea>
+      <select class="admin-input" id="proj-cat">
+        <option value="web">Webdesign</option>
+        <option value="app">App-Entwicklung</option>
+        <option value="ki">KI</option>
+        <option value="ki-kampagnen">KI-Kampagnen</option>
+        <option value="branding">Branding</option>
+        <option value="markenstrategie">Markenstrategie</option>
+      </select>
+      <input class="admin-input" type="text" id="proj-tags" placeholder="Tags, kommagetrennt (Next.js, Figma…)">
+      <input class="admin-input" type="text" id="proj-year" placeholder="Jahr" value="2025">
+
+      <label class="admin-file-btn" id="thumb-label" for="proj-thumb-input">
+        + Vorschaubild (JPG / PNG)
+      </label>
+      <input type="file" class="admin-file-input" id="proj-thumb-input" accept="image/*">
+
+      <label class="admin-file-btn" id="photos-label" for="proj-photos-input">
+        + Fotos hinzufügen (mehrere wählbar)
+      </label>
+      <input type="file" class="admin-file-input" id="proj-photos-input" accept="image/*" multiple>
+      <div id="photos-preview" style="display:none;flex-wrap:wrap;gap:6px;margin-bottom:9px;"></div>
+
+      <label class="admin-file-btn" id="file-label" for="proj-file-input">
+        + Website als PDF hochladen
+      </label>
+      <input type="file" class="admin-file-input" id="proj-file-input" accept=".pdf">
+
+      <button type="submit" class="admin-btn" id="admin-submit">Projekt speichern</button>
+      <button type="button" id="admin-cancel" style="display:none;width:100%;padding:10px;margin-top:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Abbrechen</button>
+    </form>
+
+    <div class="admin-divider"></div>
+
+    <div class="admin-lbl">Gespeicherte Projekte</div>
+    <div id="admin-list"></div>
+
+    <div class="admin-hint">
+      Öffnen: 3× auf "The Label Dept" klicken<br>
+      Schließen: Escape<br>
+      PDFs idealerweise unter 8 MB
+    </div>
+
+    <div class="admin-divider"></div>
+    <button id="admin-reset-btn" style="width:100%;padding:10px;background:rgba(180,40,40,0.08);border:1px solid rgba(180,40,40,0.2);border-radius:10px;color:rgba(220,80,80,0.55);font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;">
+      Alle Projekte & Speicher löschen
+    </button>
+
+  </div>
+</div>
+
+<!-- CROP EDITOR -->
+<div id="crop-overlay">
+  <div style="font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;color:white;letter-spacing:0.02em;">Vorschaubild zuschneiden</div>
+  <div id="crop-frame">
+    <img id="crop-img-el">
+  </div>
+  <div class="crop-controls">
+    <div class="crop-zoom-row">
+      <span>−</span>
+      <input type="range" id="crop-zoom" min="100" max="400" value="100" step="1">
+      <span>+</span>
+      <span id="crop-zoom-pct" style="min-width:36px;">100%</span>
+    </div>
+    <div class="crop-hint">Ziehen zum Verschieben · Schieberegler zum Zoomen</div>
+  </div>
+  <div class="crop-btns">
+    <button id="crop-cancel-btn">Abbrechen</button>
+    <button id="crop-confirm-btn">Übernehmen</button>
+  </div>
+</div>
+
+<footer>
+  <span class="f-logo-text" id="admin-trigger" style="cursor:default;">The Label Dept</span>
+  <div class="f-links">
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+  </div>
+  <span class="f-copy">© 2025 The Label Dept · Nürtingen</span>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════
+   THE LABEL DEPT — Portfolio Manager (IndexedDB edition)
+   No storage limits — handles hundreds of projects + large files
+   ════════════════════════════════════════════════════════ */
+
+const COLORS   = ['c-violet','c-sky','c-peach','c-mint','c-rose','c-sand','c-steel','c-green'];
+const DB_NAME  = 'tld_portfolio';
+const DB_VER   = 1;
+const OS_NAME  = 'projects';
+let   _db      = null;
+
+/* ── IndexedDB helpers ── */
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(OS_NAME)) {
+        const os = db.createObjectStore(OS_NAME, { keyPath: 'id' });
+        os.createIndex('createdAt', 'createdAt');
+      }
+    };
+    req.onsuccess = e => { _db = e.target.result; res(_db); };
+    req.onerror   = e => rej(e.target.error);
+  });
+}
+function getDB() { return _db ? Promise.resolve(_db) : openDB(); }
+
+function dbGetAll() {
+  return getDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(OS_NAME,'readonly').objectStore(OS_NAME).getAll();
+    req.onsuccess = e => res((e.target.result || []).sort((a,b) => (b.createdAt||0)-(a.createdAt||0)));
+    req.onerror   = e => rej(e.target.error);
+  }));
+}
+function dbPut(p) {
+  return getDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(OS_NAME,'readwrite').objectStore(OS_NAME).put(p);
+    req.onsuccess = () => res(); req.onerror = e => rej(e.target.error);
+  }));
+}
+function dbDelete(id) {
+  return getDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(OS_NAME,'readwrite').objectStore(OS_NAME).delete(id);
+    req.onsuccess = () => res(); req.onerror = e => rej(e.target.error);
+  }));
+}
+function dbClear() {
+  return getDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(OS_NAME,'readwrite').objectStore(OS_NAME).clear();
+    req.onsuccess = () => res(); req.onerror = e => rej(e.target.error);
+  }));
+}
+function dbCount() {
+  return getDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(OS_NAME,'readonly').objectStore(OS_NAME).count();
+    req.onsuccess = e => res(e.target.result); req.onerror = e => rej(e.target.error);
+  }));
+}
+
+/* ── Image compression ── */
+function compressImage(file, maxW, maxH, quality) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onerror = rej;
+    reader.onload = ev => {
+      const img = new Image();
+      img.onerror = rej;
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        const ratio = Math.min(maxW / w, maxH / h, 1);
+        w = Math.round(w * ratio); h = Math.round(h * ratio);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        res(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function readFileData(f, isThumb) {
+  if (f.type === 'application/pdf') {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = ev => res(ev.target.result); r.onerror = rej; r.readAsDataURL(f);
+    });
+  }
+  return isThumb ? compressImage(f, 900, 700, 0.80) : compressImage(f, 1600, 1200, 0.82);
+}
+
+/* ── Marquee ── */
+function refreshMarquee(projects) {
+  const names = projects.length ? projects.map(p => p.title) : ['Webdesign','App-Entwicklung','KI-Kampagnen','Markenstrategie'];
+  const track = document.getElementById('marquee-track');
+  track.innerHTML = [...names, ...names].map(n => `<span class="mi">${n} <span class="msep">✦</span></span>`).join('');
+}
+
+/* ── Filter ── */
+function applyFilter(cat) {
+  document.querySelectorAll('.portfolio-item').forEach(item => {
+    const match = !cat || cat === 'all' || item.dataset.category === cat;
+    item.style.opacity       = match ? '1' : '0.22';
+    item.style.transform     = match ? '' : 'scale(0.96)';
+    item.style.pointerEvents = match ? '' : 'none';
+  });
+}
+
+/* ── Render grid ── */
+async function renderGrid() {
+  const projects = await dbGetAll();
+  const grid = document.getElementById('portfolio-grid');
+  grid.innerHTML = '';
+
+  projects.forEach(p => {
+    const color = COLORS[Math.abs(p.id.split('').reduce((a,c) => a + c.charCodeAt(0), 0)) % COLORS.length];
+    const card  = document.createElement('div');
+    card.className = 'portfolio-item glass r on';
+    card.dataset.category = p.category;
+    card.dataset.dynamic  = '1';
+    card.dataset.id       = p.id;
+
+    const thumbHtml = p.thumbnail
+      ? `<img src="${p.thumbnail}" alt="${p.title}">`
+      : `<span class="portfolio-thumb-lbl">${p.title.slice(0,4).toUpperCase()}</span>`;
+
+    card.draggable = true;
+    card.innerHTML = `
+      <div class="drag-handle" title="Ziehen zum Sortieren">⠿</div>
+      <div class="portfolio-thumb ${p.thumbnail ? '' : color}">
+        ${thumbHtml}
+        <div class="portfolio-overlay">
+          <div class="portfolio-overlay-cat">${p.category}</div>
+          <div class="portfolio-overlay-title">${p.title}</div>
+        </div>
+        ${p.photos&&p.photos.length>1 ? `<div class="portfolio-pdf-badge">${p.photos.length} Fotos</div>` : p.file ? '<div class="portfolio-pdf-badge">PDF ↗</div>' : ''}
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-meta">
+          <span class="portfolio-cat">${p.category}</span>
+          <span class="portfolio-year">${p.year}</span>
+        </div>
+        <div class="portfolio-name">${p.title}</div>
+        <p class="portfolio-desc">${p.description || ''}</p>
+        <div class="portfolio-tags">${(p.tags||[]).map(t=>`<span class="portfolio-tag">${t}</span>`).join('')}</div>
+      </div>`;
+
+    card.addEventListener('click', e => {
+      if (e.target.closest('.drag-handle')) return;
+      openModal(p);
+    });
+    grid.appendChild(card);
+  });
+
+  refreshMarquee(projects);
+
+  /* re-apply active filter */
+  const activeBtn = document.querySelector('.filter-btn.active');
+  if (activeBtn) applyFilter(activeBtn.dataset.filter);
+
+  /* always refresh drag after re-render */
+  if (typeof initDrag === 'function') initDrag();
+}
+
+/* ── Drag-to-reorder ── */
+let _dragSrc = null;
+let _dragInited = false;
+
+function initDrag() {
+  if (_dragInited) return;
+  _dragInited = true;
+  const grid = document.getElementById('portfolio-grid');
+
+  grid.addEventListener('dragstart', e => {
+    const card = e.target.closest('.portfolio-item[data-id]');
+    if (!card) return;
+    _dragSrc = card;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', card.dataset.id);
+    requestAnimationFrame(() => card.classList.add('dragging'));
+  });
+
+  grid.addEventListener('dragend', () => {
+    document.querySelectorAll('.portfolio-item').forEach(c => {
+      c.classList.remove('dragging', 'drag-over');
+    });
+    _dragSrc = null;
+  });
+
+  grid.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const card = e.target.closest('.portfolio-item[data-id]');
+    document.querySelectorAll('.portfolio-item').forEach(c => c.classList.remove('drag-over'));
+    if (card && card !== _dragSrc) card.classList.add('drag-over');
+  });
+
+  grid.addEventListener('dragleave', e => {
+    if (!grid.contains(e.relatedTarget)) {
+      document.querySelectorAll('.portfolio-item').forEach(c => c.classList.remove('drag-over'));
+    }
+  });
+
+  grid.addEventListener('drop', async e => {
+    e.preventDefault();
+    const target = e.target.closest('.portfolio-item[data-id]');
+    if (!target || !_dragSrc || target === _dragSrc) return;
+
+    /* insert before or after based on drop position */
+    const rect = target.getBoundingClientRect();
+    const after = e.clientX > rect.left + rect.width / 2;
+    if (after) target.after(_dragSrc);
+    else       target.before(_dragSrc);
+
+    document.querySelectorAll('.portfolio-item').forEach(c => c.classList.remove('drag-over'));
+    await saveGridOrder();
+  });
+}
+
+async function saveGridOrder() {
+  const cards = Array.from(document.querySelectorAll('#portfolio-grid .portfolio-item[data-id]'));
+  const all   = await dbGetAll();
+  const map   = Object.fromEntries(all.map(p => [p.id, p]));
+  const total = cards.length;
+  for (let i = 0; i < total; i++) {
+    const id = cards[i].dataset.id;
+    if (map[id]) {
+      map[id].createdAt = (total - i) * 100000;
+      await dbPut(map[id]);
+    }
+  }
+}
+
+/* ── Modal ── */
+function openModal(p) {
+  document.getElementById('modal-title').textContent = p.title;
+  document.getElementById('modal-meta').textContent  = `${p.category} · ${p.year}${p.client ? ' · ' + p.client : ''}`;
+  const body = document.getElementById('modal-body');
+
+  const photos  = p.photos && p.photos.length ? p.photos : (p.file && p.fileType !== 'pdf' ? [p.file] : []);
+  const hasPdf  = p.file && p.fileType === 'pdf';
+  const hasPhotos = photos.length > 0;
+
+  if (hasPdf && !hasPhotos) {
+    /* PDF only */
+    try {
+      const b64 = p.file.split(',')[1];
+      const bin = atob(b64);
+      const buf = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      const url = URL.createObjectURL(new Blob([buf], { type: 'application/pdf' }));
+      body.innerHTML = `<embed src="${url}" type="application/pdf" style="width:100%;height:100%;">`;
+    } catch {
+      body.innerHTML = `<div class="proj-modal-empty">PDF konnte nicht geladen werden.</div>`;
+    }
+  } else if (hasPhotos) {
+    /* Photo gallery with optional PDF tab */
+    let idx = 0;
+    const tabs = hasPdf ? `
+      <div id="modal-tabs" style="display:flex;gap:8px;padding:12px 20px 0;flex-shrink:0;">
+        <button id="tab-photos" onclick="showTab('photos')" style="padding:6px 16px;border-radius:20px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Fotos (${photos.length})</button>
+        <button id="tab-pdf" onclick="showTab('pdf')" style="padding:6px 16px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">PDF</button>
+      </div>` : '';
+
+    body.style.flexDirection = 'column';
+    body.innerHTML = `
+      ${tabs}
+      <div id="gallery-view" style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;">
+        <div id="gallery-main" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:0;">
+          <img id="gallery-img" src="${photos[0]}" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+          ${photos.length > 1 ? `
+            <button onclick="galleryNav(-1)" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">‹</button>
+            <button onclick="galleryNav(1)"  style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">›</button>
+            <div id="gallery-counter" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);padding:4px 12px;border-radius:20px;background:rgba(0,0,0,0.5);font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.6);">1 / ${photos.length}</div>
+          ` : ''}
+        </div>
+        ${photos.length > 1 ? `
+        <div style="display:flex;gap:6px;padding:10px 16px;overflow-x:auto;flex-shrink:0;background:rgba(0,0,0,0.3);">
+          ${photos.map((ph,i) => `<img src="${ph}" data-i="${i}" onclick="gallerySel(${i})" style="width:52px;height:38px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid ${i===0?'rgba(255,255,255,0.7)':'rgba(255,255,255,0.15)'};flex-shrink:0;transition:border-color 0.2s;">`).join('')}
+        </div>` : ''}
+      </div>
+      <div id="pdf-view" style="flex:1;display:none;"></div>`;
+
+    /* gallery controls */
+    window._galleryPhotos = photos;
+    window.galleryNav = dir => gallerySel((window._galleryIdx + dir + photos.length) % photos.length);
+    window.gallerySel = i => {
+      window._galleryIdx = i;
+      document.getElementById('gallery-img').src = photos[i];
+      if (document.getElementById('gallery-counter')) document.getElementById('gallery-counter').textContent = `${i+1} / ${photos.length}`;
+      document.querySelectorAll('#modal-body img[data-i]').forEach(t => t.style.borderColor = (+t.dataset.i===i ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.15)'));
+    };
+    window._galleryIdx = 0;
+
+    window.showTab = tab => {
+      const gv = document.getElementById('gallery-view');
+      const pv = document.getElementById('pdf-view');
+      const tb = document.getElementById('tab-photos');
+      const tp = document.getElementById('tab-pdf');
+      if (tab === 'photos') {
+        gv.style.display = 'flex'; pv.style.display = 'none';
+        tb.style.background = 'rgba(255,255,255,0.15)'; tb.style.color = 'white';
+        tp.style.background = 'rgba(255,255,255,0.06)'; tp.style.color = 'rgba(255,255,255,0.5)';
+      } else {
+        gv.style.display = 'none'; pv.style.display = 'flex'; pv.style.alignItems = 'center'; pv.style.justifyContent = 'center';
+        tp.style.background = 'rgba(255,255,255,0.15)'; tp.style.color = 'white';
+        tb.style.background = 'rgba(255,255,255,0.06)'; tb.style.color = 'rgba(255,255,255,0.5)';
+        if (!pv.innerHTML) {
+          try {
+            const b64 = p.file.split(',')[1]; const bin = atob(b64);
+            const buf = new Uint8Array(bin.length);
+            for (let i=0;i<bin.length;i++) buf[i]=bin.charCodeAt(i);
+            const url = URL.createObjectURL(new Blob([buf],{type:'application/pdf'}));
+            pv.innerHTML = `<embed src="${url}" type="application/pdf" style="width:100%;height:100%;">`;
+          } catch { pv.innerHTML = `<div class="proj-modal-empty">PDF konnte nicht geladen werden.</div>`; }
+        }
+      }
+    };
+
+    /* keyboard arrow navigation */
+    body._keyHandler = e => {
+      if (e.key === 'ArrowLeft')  window.galleryNav(-1);
+      if (e.key === 'ArrowRight') window.galleryNav(1);
+    };
+    document.addEventListener('keydown', body._keyHandler);
+
+  } else {
+    body.style.flexDirection = '';
+    body.innerHTML = `<div class="proj-modal-empty">
+      <div style="font-family:'Clash Display',sans-serif;font-size:36px;color:rgba(255,255,255,0.08);margin-bottom:12px;">${p.title}</div>
+      ${p.description || 'Keine Vorschaudatei vorhanden.'}
+    </div>`;
+  }
+  document.getElementById('proj-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  const body = document.getElementById('modal-body');
+  if (body._keyHandler) { document.removeEventListener('keydown', body._keyHandler); delete body._keyHandler; }
+  body.style.flexDirection = '';
+  body.innerHTML = '';
+  document.getElementById('proj-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── Admin list ── */
+async function renderAdminList() {
+  const projects = await dbGetAll();
+  const list = document.getElementById('admin-list');
+  if (!projects.length) { list.innerHTML = '<div class="admin-empty">Noch keine Projekte.</div>'; return; }
+
+  list.innerHTML = projects.map(p => `
+    <div class="admin-proj-item">
+      <div style="flex:1;min-width:0;">
+        <div class="admin-proj-name">${p.title}</div>
+        <div class="admin-proj-meta">${p.category} · ${p.year}${p.photos&&p.photos.length ? ` · ${p.photos.length} Foto${p.photos.length>1?'s':''}` : ''}${p.file ? ' · PDF' : ''}</div>
+      </div>
+      <div style="display:flex;gap:5px;flex-shrink:0;">
+        <button class="admin-edit" data-id="${p.id}" style="padding:5px 10px;border-radius:6px;background:rgba(71,58,49,0.2);border:1px solid rgba(71,58,49,0.35);color:rgba(255,180,100,0.75);font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Bearb.</button>
+        <button class="admin-del" data-id="${p.id}">Löschen</button>
+      </div>
+    </div>`).join('');
+
+  list.querySelectorAll('.admin-del').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const all = await dbGetAll();
+      const p   = all.find(x => x.id === btn.dataset.id);
+      if (p && confirm(`"${p.title}" löschen?`)) {
+        await dbDelete(btn.dataset.id);
+        renderGrid(); renderAdminList(); resetForm();
+      }
+    });
+  });
+
+  list.querySelectorAll('.admin-edit').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const all = await dbGetAll();
+      const p   = all.find(x => x.id === btn.dataset.id);
+      if (!p) return;
+      document.getElementById('proj-edit-id').value       = p.id;
+      document.getElementById('proj-title').value         = p.title || '';
+      document.getElementById('proj-client').value        = p.client || '';
+      document.getElementById('proj-desc').value          = p.description || '';
+      document.getElementById('proj-cat').value           = p.category || 'web';
+      document.getElementById('proj-tags').value          = (p.tags || []).join(', ');
+      document.getElementById('proj-year').value          = p.year || '2025';
+      document.getElementById('form-lbl').textContent     = 'Projekt bearbeiten';
+      document.getElementById('admin-submit').textContent = 'Änderungen speichern';
+      document.getElementById('admin-cancel').style.display = 'block';
+      document.getElementById('admin-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function resetForm() {
+  document.getElementById('admin-form').reset();
+  document.getElementById('proj-edit-id').value           = '';
+  document.getElementById('proj-year').value              = '2025';
+  document.getElementById('form-lbl').textContent         = 'Neues Projekt';
+  document.getElementById('admin-submit').textContent     = 'Projekt speichern';
+  document.getElementById('admin-cancel').style.display   = 'none';
+  const tl = document.getElementById('thumb-label');
+  tl.textContent = '+ Vorschaubild (JPG / PNG)'; tl.classList.remove('has-file'); delete tl.dataset.croppedData;
+  document.getElementById('photos-label').textContent     = '+ Fotos hinzufügen (mehrere wählbar)';
+  document.getElementById('photos-label').classList.remove('has-file');
+  document.getElementById('photos-preview').style.display = 'none';
+  document.getElementById('photos-preview').innerHTML     = '';
+  document.getElementById('file-label').textContent       = '+ Website als PDF hochladen';
+  document.getElementById('file-label').classList.remove('has-file');
+}
+
+/* ── Admin open/close ── */
+function openAdmin()  { document.getElementById('admin-panel').classList.add('open'); renderAdminList(); }
+function closeAdmin() { document.getElementById('admin-panel').classList.remove('open'); }
+
+/* ── File input UI ── */
+function bindFileInput(inputId, labelId, defaultText) {
+  document.getElementById(inputId).addEventListener('change', function() {
+    const lbl = document.getElementById(labelId);
+    if (this.files[0]) { lbl.textContent = `✓ ${this.files[0].name}`; lbl.classList.add('has-file'); }
+    else               { lbl.textContent = defaultText; lbl.classList.remove('has-file'); }
+  });
+}
+bindFileInput('proj-file-input',  'file-label',  '+ Website als PDF hochladen');
+
+/* ── Crop Editor ── */
+let _cropResolve = null;
+const cropOverlay = document.getElementById('crop-overlay');
+const cropFrame   = document.getElementById('crop-frame');
+const cropImgEl   = document.getElementById('crop-img-el');
+const cropZoom    = document.getElementById('crop-zoom');
+const cropZoomPct = document.getElementById('crop-zoom-pct');
+
+let _ox = 0, _oy = 0, _scale = 1;
+let _dragging = false, _startX = 0, _startY = 0, _startOx = 0, _startOy = 0;
+let _naturalW = 0, _naturalH = 0, _displayW = 0, _displayH = 0;
+const FRAME_W = 320, FRAME_H = 240;
+
+function _applyTransform() {
+  cropImgEl.style.width  = _displayW + 'px';
+  cropImgEl.style.height = _displayH + 'px';
+  cropImgEl.style.left   = (FRAME_W / 2 - _displayW / 2 + _ox) + 'px';
+  cropImgEl.style.top    = (FRAME_H / 2 - _displayH / 2 + _oy) + 'px';
+}
+
+function _clampOffset() {
+  const hw = _displayW / 2, hh = _displayH / 2;
+  const maxOx = hw - FRAME_W / 2, maxOy = hh - FRAME_H / 2;
+  _ox = Math.max(-maxOx, Math.min(maxOx, _ox));
+  _oy = Math.max(-maxOy, Math.min(maxOy, _oy));
+}
+
+function openCropEditor(file) {
+  return new Promise(res => {
+    _cropResolve = res;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      cropImgEl.onload = () => {
+        _naturalW = cropImgEl.naturalWidth;
+        _naturalH = cropImgEl.naturalHeight;
+        /* initial fit: cover the frame */
+        const scaleToFit = Math.max(FRAME_W / _naturalW, FRAME_H / _naturalH);
+        _displayW = _naturalW * scaleToFit;
+        _displayH = _naturalH * scaleToFit;
+        _scale = 1; _ox = 0; _oy = 0;
+        cropZoom.value = 100; cropZoomPct.textContent = '100%';
+        _applyTransform();
+        cropOverlay.classList.add('open');
+      };
+      cropImgEl.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* drag */
+cropFrame.addEventListener('mousedown', e => {
+  _dragging = true; _startX = e.clientX; _startY = e.clientY;
+  _startOx = _ox; _startOy = _oy; e.preventDefault();
+});
+window.addEventListener('mousemove', e => {
+  if (!_dragging) return;
+  _ox = _startOx + (e.clientX - _startX);
+  _oy = _startOy + (e.clientY - _startY);
+  _clampOffset(); _applyTransform();
+});
+window.addEventListener('mouseup', () => { _dragging = false; });
+
+/* touch drag */
+cropFrame.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  _dragging = true; _startX = t.clientX; _startY = t.clientY;
+  _startOx = _ox; _startOy = _oy; e.preventDefault();
+}, { passive: false });
+window.addEventListener('touchmove', e => {
+  if (!_dragging) return;
+  const t = e.touches[0];
+  _ox = _startOx + (t.clientX - _startX);
+  _oy = _startOy + (t.clientY - _startY);
+  _clampOffset(); _applyTransform();
+}, { passive: false });
+window.addEventListener('touchend', () => { _dragging = false; });
+
+/* zoom */
+cropZoom.addEventListener('input', () => {
+  const pct = parseInt(cropZoom.value);
+  cropZoomPct.textContent = pct + '%';
+  const base = Math.max(FRAME_W / _naturalW, FRAME_H / _naturalH);
+  _displayW = _naturalW * base * (pct / 100);
+  _displayH = _naturalH * base * (pct / 100);
+  _clampOffset(); _applyTransform();
+});
+
+/* scroll to zoom */
+cropFrame.addEventListener('wheel', e => {
+  e.preventDefault();
+  const newVal = Math.max(100, Math.min(400, parseInt(cropZoom.value) - e.deltaY * 0.3));
+  cropZoom.value = newVal;
+  cropZoom.dispatchEvent(new Event('input'));
+}, { passive: false });
+
+/* confirm → export via canvas */
+document.getElementById('crop-confirm-btn').addEventListener('click', () => {
+  const OUT_W = 800, OUT_H = 600;
+  const canvas = document.createElement('canvas');
+  canvas.width = OUT_W; canvas.height = OUT_H;
+  const ctx = canvas.getContext('2d');
+
+  /* what part of the natural image is visible in the frame? */
+  const ratio = _naturalW / _displayW;           /* natural px per display px */
+  const imgLeft = FRAME_W / 2 - _displayW / 2 + _ox; /* display px: where img starts in frame */
+  const imgTop  = FRAME_H / 2 - _displayH / 2 + _oy;
+  const srcX = (-imgLeft) * ratio;
+  const srcY = (-imgTop)  * ratio;
+  const srcW = FRAME_W    * ratio;
+  const srcH = FRAME_H    * ratio;
+
+  const nativeImg = new Image();
+  nativeImg.onload = () => {
+    ctx.drawImage(nativeImg, srcX, srcY, srcW, srcH, 0, 0, OUT_W, OUT_H);
+    const result = canvas.toDataURL('image/jpeg', 0.88);
+    cropOverlay.classList.remove('open');
+    if (_cropResolve) { _cropResolve(result); _cropResolve = null; }
+  };
+  nativeImg.src = cropImgEl.src;
+});
+
+document.getElementById('crop-cancel-btn').addEventListener('click', () => {
+  cropOverlay.classList.remove('open');
+  if (_cropResolve) { _cropResolve(null); _cropResolve = null; }
+  document.getElementById('proj-thumb-input').value = '';
+  document.getElementById('thumb-label').textContent = '+ Vorschaubild (JPG / PNG)';
+  document.getElementById('thumb-label').classList.remove('has-file');
+});
+
+/* hook into thumb input — open crop editor instead of direct read */
+document.getElementById('proj-thumb-input').addEventListener('change', async function() {
+  const lbl = document.getElementById('thumb-label');
+  if (!this.files[0]) { lbl.textContent = '+ Vorschaubild (JPG / PNG)'; lbl.classList.remove('has-file'); return; }
+  const result = await openCropEditor(this.files[0]);
+  if (result) {
+    lbl.textContent = '✓ Vorschaubild zugeschnitten';
+    lbl.classList.add('has-file');
+    lbl.dataset.croppedData = result;   /* store result on label for submit */
+  }
+});
+
+/* ── Multiple photos preview ── */
+document.getElementById('proj-photos-input').addEventListener('change', function() {
+  const lbl     = document.getElementById('photos-label');
+  const preview = document.getElementById('photos-preview');
+  const files   = Array.from(this.files);
+  if (!files.length) {
+    lbl.textContent = '+ Fotos hinzufügen (mehrere wählbar)';
+    lbl.classList.remove('has-file');
+    preview.style.display = 'none'; preview.innerHTML = '';
+    return;
+  }
+  lbl.textContent = `✓ ${files.length} Foto${files.length>1?'s':''} ausgewählt`;
+  lbl.classList.add('has-file');
+  preview.style.display = 'flex'; preview.innerHTML = '';
+  files.forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      img.style.cssText = 'width:52px;height:38px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.15);';
+      preview.appendChild(img);
+    };
+    r.readAsDataURL(f);
+  });
+});
+
+/* ── Form submit ── */
+document.getElementById('admin-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn    = document.getElementById('admin-submit');
+  const editId = document.getElementById('proj-edit-id').value;
+  btn.disabled = true; btn.textContent = 'Wird gespeichert…';
+
+  try {
+    const thumbLabel  = document.getElementById('thumb-label');
+    const croppedThumb = thumbLabel.dataset.croppedData || null;
+    const photoFiles = Array.from(document.getElementById('proj-photos-input').files);
+    const projFile   = document.getElementById('proj-file-input').files[0];
+
+    const fields = {
+      title:       document.getElementById('proj-title').value.trim(),
+      client:      document.getElementById('proj-client').value.trim(),
+      description: document.getElementById('proj-desc').value.trim(),
+      category:    document.getElementById('proj-cat').value,
+      tags:        document.getElementById('proj-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+      year:        document.getElementById('proj-year').value.trim() || String(new Date().getFullYear()),
+    };
+
+    /* compress all new photos */
+    const newPhotos = photoFiles.length
+      ? await Promise.all(photoFiles.map(f => compressImage(f, 1600, 1200, 0.82)))
+      : null;
+
+    if (editId) {
+      const all      = await dbGetAll();
+      const existing = all.find(x => x.id === editId) || {};
+      const updated  = {
+        ...existing, ...fields,
+        thumbnail: croppedThumb || existing.thumbnail,
+        photos:    newPhotos ? [...(existing.photos||[]), ...newPhotos] : (existing.photos||[]),
+        file:      projFile  ? await readFileData(projFile, false) : existing.file,
+        fileType:  projFile  ? 'pdf' : existing.fileType,
+      };
+      await dbPut(updated);
+      btn.textContent = '✓ Gespeichert!';
+      setTimeout(() => { btn.textContent = 'Änderungen speichern'; btn.disabled = false; }, 2200);
+    } else {
+      const p = {
+        id:        Date.now().toString(),
+        createdAt: Date.now(),
+        ...fields,
+        thumbnail: croppedThumb || null,
+        photos:    newPhotos || [],
+        file:      projFile  ? await readFileData(projFile, false) : null,
+        fileType:  projFile  ? 'pdf' : null,
+      };
+      await dbPut(p);
+      btn.textContent = '✓ Gespeichert!';
+      setTimeout(() => { btn.textContent = 'Projekt speichern'; btn.disabled = false; }, 2200);
+    }
+
+    renderGrid(); renderAdminList(); resetForm();
+  } catch(err) {
+    console.error(err);
+    btn.textContent = 'Fehler — nochmal versuchen'; btn.disabled = false;
+  }
+});
+
+/* ── Cancel edit ── */
+document.getElementById('admin-cancel').addEventListener('click', resetForm);
+
+/* ── Reset / clear all data ── */
+async function doReset() {
+  if (confirm('Wirklich alle Projekte löschen?')) {
+    await dbClear();
+    localStorage.removeItem('tld_seeded_v3');
+    renderGrid(); renderAdminList();
+  }
+}
+document.getElementById('admin-reset-btn').addEventListener('click', doReset);
+document.getElementById('admin-reset-top').addEventListener('click', doReset);
+
+/* ── Events ── */
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('proj-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.getElementById('admin-close').addEventListener('click', closeAdmin);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeAdmin(); } });
+
+/* ── Seed data + init ── */
+const SEED_KEY = 'tld_seeded_v3';
+async function init() {
+  await openDB();
+
+  const count = await dbCount();
+  if (count === 0 && !localStorage.getItem(SEED_KEY)) {
+    const seed = [
+      { id:'seed-1', createdAt:1000, title:'Bloom Cosmetics',   client:'', description:'Vollständige Markenidentität für eine nachhaltige Kosmetikmarke — Logo, Farbwelt, Verpackung und Website.', category:'branding',      tags:['Figma','Branding','Webflow'],          year:'2024', thumbnail:null, file:null, fileType:null },
+      { id:'seed-2', createdAt:2000, title:'Pace Running App',  client:'', description:'Lauf-Tracking-App mit KI-Coaching, personalisierten Trainingsplänen und sozialer Community-Funktion.',     category:'app',           tags:['React Native','Node.js','GPT-4'],      year:'2024', thumbnail:null, file:null, fileType:null },
+      { id:'seed-3', createdAt:3000, title:'Karma Yoga Studio', client:'', description:'Website mit Online-Buchungssystem, Kurskalender und Mitgliederbereich für ein Yoga-Studio in Stuttgart.',  category:'web',           tags:['React','Framer Motion','Stripe'],      year:'2023', thumbnail:null, file:null, fileType:null },
+      { id:'seed-4', createdAt:4000, title:'NeuralMenu',        client:'', description:'KI-gestütztes Menüsystem für Restaurants — personalisierte Empfehlungen und dynamische Preisgestaltung.', category:'ki',            tags:['OpenAI','Next.js','Supabase'],         year:'2023', thumbnail:null, file:null, fileType:null },
+    ];
+    for (const p of seed) await dbPut(p);
+    localStorage.setItem(SEED_KEY, '1');
+  }
+
+  await renderGrid();
+  initDrag();
+}
+
+/* ── Filter click handlers ── */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilter(btn.dataset.filter);
+  });
+});
+
+/* ── Admin trigger: triple-click footer logo ── */
+let _clicks = 0, _clickTimer;
+document.getElementById('admin-trigger').addEventListener('click', () => {
+  _clicks++;
+  clearTimeout(_clickTimer);
+  _clickTimer = setTimeout(() => { _clicks = 0; }, 600);
+  if (_clicks >= 3) { _clicks = 0; openAdmin(); }
+});
+
+init();
+</script>
+
+</body>
+</html>
