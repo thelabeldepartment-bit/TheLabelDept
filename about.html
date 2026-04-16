@@ -130,8 +130,8 @@
   /* ── Story: photo full-width portrait, text below ── */
   .story-grid { grid-template-columns: 1fr; gap: 0; }
   .story-visual {
-    aspect-ratio: 3/4; border-radius: var(--r-xl) var(--r-xl) 0 0;
-    max-height: 72vw;
+    aspect-ratio: unset; height: 72vw; max-height: 360px; min-height: 240px;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
   }
   .story-text {
     background: rgba(255,255,255,0.55);
@@ -165,7 +165,7 @@
 }
 
 @media(max-width:600px){
-  .story-visual { max-height: 80vw; }
+  .story-visual { height: 78vw; max-height: 300px; }
   .adark-stats { grid-template-columns: repeat(2,1fr); }
   .value-card { padding: 22px 18px; }
 }
