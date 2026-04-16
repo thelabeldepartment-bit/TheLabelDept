@@ -199,9 +199,11 @@ footer { background: rgba(255,255,255,0.04) !important; border-top: 1px solid rg
 }
 .proj-modal-body.pdf-mode {
   display: block; padding: 0; overflow: hidden;
+  position: relative; height: 100%;
 }
 .proj-modal-body.pdf-mode iframe {
-  display: block; width: 100%; height: 100%; border: none;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: none; display: block;
 }
 .proj-modal-body embed,
 .proj-modal-body iframe { width: 100%; height: 100%; border: none; }
@@ -757,7 +759,7 @@ function openModal(p) {
   document.getElementById('modal-meta').textContent  = `${p.category} · ${p.year}${p.client ? ' · ' + p.client : ''}`;
   const body = document.getElementById('modal-body');
 
-  const photos  = p.photos && p.photos.length ? p.photos : (p.file && p.fileType !== 'pdf' ? [p.file] : []);
+  const photos  = p.photos && p.photos.length ? p.photos : (p.file && p.file_type !== 'pdf' ? [p.file] : []);
   const hasPdf  = !!p.file;
   const hasPhotos = photos.length > 0;
 
@@ -786,6 +788,8 @@ function openModal(p) {
       </div>` : '';
 
     body.style.flexDirection = 'column';
+    body.style.alignItems = 'stretch';
+    body.style.justifyContent = 'flex-start';
     body.innerHTML = `
       ${tabs}
       <div id="gallery-view" style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;">
@@ -802,7 +806,7 @@ function openModal(p) {
           ${photos.map((ph,i) => `<img src="${ph}" data-i="${i}" onclick="gallerySel(${i})" style="width:52px;height:38px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid ${i===0?'rgba(255,255,255,0.7)':'rgba(255,255,255,0.15)'};flex-shrink:0;transition:border-color 0.2s;">`).join('')}
         </div>` : ''}
       </div>
-      <div id="pdf-view" style="flex:1;display:none;"></div>`;
+      <div id="pdf-view" style="flex:1;display:none;position:relative;overflow:hidden;width:100%;"></div>`;
 
     /* gallery controls */
     window._galleryPhotos = photos;
@@ -825,19 +829,19 @@ function openModal(p) {
         tb.style.background = 'rgba(255,255,255,0.15)'; tb.style.color = 'white';
         tp.style.background = 'rgba(255,255,255,0.06)'; tp.style.color = 'rgba(255,255,255,0.5)';
       } else {
-        gv.style.display = 'none'; pv.style.display = 'flex'; pv.style.alignItems = 'center'; pv.style.justifyContent = 'center';
+        gv.style.display = 'none'; pv.style.display = 'block';
         tp.style.background = 'rgba(255,255,255,0.15)'; tp.style.color = 'white';
         tb.style.background = 'rgba(255,255,255,0.06)'; tb.style.color = 'rgba(255,255,255,0.5)';
         if (!pv.innerHTML) {
-          pv.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace;font-size:9px;">Lädt…</div>`;
+          pv.innerHTML = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace;font-size:9px;">Lädt…</div>`;
           fetch(p.file)
             .then(r => r.blob())
             .then(blob => {
               const url = URL.createObjectURL(blob);
-              pv.innerHTML = `<iframe src="${url}" style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+              pv.innerHTML = `<iframe src="${url}" style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;"></iframe>`;
             })
             .catch(() => {
-              pv.innerHTML = `<a href="${p.file}" target="_blank" style="padding:10px 24px;border-radius:20px;background:var(--accent);color:white;text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">PDF öffnen →</a>`;
+              pv.innerHTML = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><a href="${p.file}" target="_blank" style="padding:10px 24px;border-radius:20px;background:var(--accent);color:white;text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">PDF öffnen →</a></div>`;
             });
         }
       }
@@ -864,6 +868,8 @@ function closeModal() {
   const body = document.getElementById('modal-body');
   if (body._keyHandler) { document.removeEventListener('keydown', body._keyHandler); delete body._keyHandler; }
   body.style.flexDirection = '';
+  body.style.alignItems = '';
+  body.style.justifyContent = '';
   body.classList.remove('pdf-mode');
   body.innerHTML = '';
   document.getElementById('proj-modal').classList.remove('open');
