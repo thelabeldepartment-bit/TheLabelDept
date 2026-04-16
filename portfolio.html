@@ -79,6 +79,7 @@ footer { background: rgba(255,255,255,0.04) !important; border-top: 1px solid rg
   border-radius: var(--r-xl); overflow: hidden;
   cursor: pointer; transition: opacity 0.4s ease, transform 0.4s ease;
   transform-style: preserve-3d; position: relative;
+  display: flex; flex-direction: column;
 }
 .portfolio-item.glass {
   background: var(--frost-noise) center/300px 300px, rgba(255,255,255,0.48);
@@ -139,6 +140,7 @@ footer { background: rgba(255,255,255,0.04) !important; border-top: 1px solid rg
 .portfolio-info {
   padding: 22px 26px 26px;
   background: rgba(255,255,255,0.42);
+  flex: 1;
 }
 .portfolio-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .portfolio-cat {
