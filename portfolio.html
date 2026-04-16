@@ -358,6 +358,10 @@ input[type="file"].admin-file-input { display: none; }
 
 .admin-empty { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: rgba(255,255,255,0.18); text-align: center; padding: 18px 0; }
 .admin-hint { font-family: 'DM Mono', monospace; font-size: 7.5px; letter-spacing: 0.08em; color: rgba(255,255,255,0.15); text-align: center; padding-top: 20px; line-height: 1.9; }
+.cm-block { margin-bottom: 10px; }
+.cm-block:last-child { margin-bottom: 0; }
+.cm-del-btn { padding: 4px 10px; border-radius: 6px; background: rgba(180,40,40,0.15); border: 1px solid rgba(200,60,60,0.3); color: rgba(220,100,100,0.8); font-family: 'DM Mono', monospace; font-size: 7px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; }
+.cm-del-btn:hover { background: rgba(180,40,40,0.3); }
 
 </style>
 </head>
@@ -462,6 +466,9 @@ input[type="file"].admin-file-input { display: none; }
         + Website als PDF hochladen
       </label>
       <input type="file" class="admin-file-input" id="proj-file-input" accept=".pdf">
+
+      <!-- existing media shown when editing -->
+      <div id="current-media" style="display:none;margin-bottom:10px;"></div>
 
       <button type="submit" class="admin-btn" id="admin-submit">Projekt speichern</button>
       <button type="button" id="admin-cancel" style="display:none;width:100%;padding:10px;margin-top:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Abbrechen</button>
@@ -878,8 +885,83 @@ async function renderAdminList() {
       document.getElementById('form-lbl').textContent     = 'Projekt bearbeiten';
       document.getElementById('admin-submit').textContent = 'Änderungen speichern';
       document.getElementById('admin-cancel').style.display = 'block';
+      renderCurrentMedia(p);
       document.getElementById('admin-scroll').scrollTo({ top: 0, behavior: 'smooth' });
     });
+  });
+}
+
+/* ── Existing media manager (shown during edit) ── */
+let _photosToDelete = new Set();
+let _deleteThumbnail = false;
+let _deletePDF = false;
+
+function renderCurrentMedia(p) {
+  _photosToDelete.clear();
+  _deleteThumbnail = false;
+  _deletePDF = false;
+
+  const S = 'font-family:\'DM Mono\',monospace;font-size:7.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:6px;';
+  let html = '';
+
+  if (p.thumbnail) {
+    html += `<div class="cm-block">
+      <div style="${S}">Vorschaubild</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <img src="${p.thumbnail}" style="width:60px;height:45px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.12);">
+        <button type="button" id="del-thumb" class="cm-del-btn">× Entfernen</button>
+      </div>
+    </div>`;
+  }
+
+  if (p.photos && p.photos.length) {
+    html += `<div class="cm-block">
+      <div style="${S}">Fotos (${p.photos.length}) — × zum Löschen</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        ${p.photos.map((url, i) => `
+          <div style="position:relative;" data-photo-idx="${i}">
+            <img src="${url}" style="width:52px;height:38px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.12);">
+            <button type="button" class="del-photo-btn" data-idx="${i}" style="position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:rgba(180,40,40,0.9);border:none;color:white;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;">×</button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (p.file) {
+    html += `<div class="cm-block">
+      <div style="${S}">PDF</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,180,100,0.7);">📄 PDF vorhanden</span>
+        <button type="button" id="del-pdf" class="cm-del-btn">× Entfernen</button>
+      </div>
+    </div>`;
+  }
+
+  const container = document.getElementById('current-media');
+  if (!html) { container.style.display = 'none'; container.innerHTML = ''; return; }
+
+  container.innerHTML = `<div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;margin-bottom:4px;">${html}</div>`;
+  container.style.display = 'block';
+
+  document.getElementById('del-thumb')?.addEventListener('click', function() {
+    _deleteThumbnail = true;
+    this.closest('.cm-block').style.opacity = '0.35';
+    this.disabled = true; this.textContent = '✓ Wird gelöscht';
+  });
+
+  container.querySelectorAll('.del-photo-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const idx = parseInt(this.dataset.idx);
+      _photosToDelete.add(idx);
+      this.closest('[data-photo-idx]').style.opacity = '0.3';
+      this.disabled = true;
+    });
+  });
+
+  document.getElementById('del-pdf')?.addEventListener('click', function() {
+    _deletePDF = true;
+    this.closest('.cm-block').style.opacity = '0.35';
+    this.disabled = true; this.textContent = '✓ Wird gelöscht';
   });
 }
 
@@ -898,6 +980,9 @@ function resetForm() {
   document.getElementById('photos-preview').innerHTML     = '';
   document.getElementById('file-label').textContent       = '+ Website als PDF hochladen';
   document.getElementById('file-label').classList.remove('has-file');
+  document.getElementById('current-media').style.display  = 'none';
+  document.getElementById('current-media').innerHTML      = '';
+  _photosToDelete.clear(); _deleteThumbnail = false; _deletePDF = false;
 }
 
 /* ── Admin open/close ── */
@@ -1126,12 +1211,13 @@ document.getElementById('admin-form').addEventListener('submit', async e => {
     if (editId) {
       const all      = await dbGetAll();
       const existing = all.find(x => x.id === editId) || {};
+      const keptPhotos = (existing.photos || []).filter((_, i) => !_photosToDelete.has(i));
       const updated  = {
         ...existing, ...fields,
-        thumbnail: thumbnailUrl || existing.thumbnail,
-        photos:    photoUrls ? [...(existing.photos||[]), ...photoUrls] : (existing.photos||[]),
-        file:      fileUrl || existing.file,
-        file_type: projFile ? 'pdf' : existing.file_type,
+        thumbnail: _deleteThumbnail ? null : (thumbnailUrl || existing.thumbnail),
+        photos:    photoUrls ? [...keptPhotos, ...photoUrls] : keptPhotos,
+        file:      _deletePDF ? null : (fileUrl || existing.file),
+        file_type: _deletePDF ? null : (projFile ? 'pdf' : existing.file_type),
       };
       await dbPut(updated);
       btn.textContent = '✓ Gespeichert!';
