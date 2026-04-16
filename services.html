@@ -98,12 +98,21 @@
 .tech-pill div:first-child { font-size: 22px; margin-bottom: 8px; }
 
 @media(max-width:860px){
-  .srv-detail-grid { grid-template-columns: 1fr; }
+  /* Hide emoji visual panels, keep only text cards */
+  .srv-detail-visual { display: none; }
+  .srv-detail-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
   .srv-detail-grid:nth-child(even) .srv-detail-text { order: 1; }
-  .srv-detail-grid:nth-child(even) .srv-detail-visual { order: 2; }
+  .srv-detail-text { border-radius: var(--r-lg); padding: 32px 24px; }
+
+  /* Prices — show price value, fix layout */
   .price-body-inner { grid-template-columns: 1fr; padding: 0 20px 24px; }
-  .price-header { grid-template-columns: 32px 1fr auto; }
-  .price-val { display: none; }
+  .price-header { grid-template-columns: 32px 1fr auto auto; gap: 12px; padding: 18px 20px; }
+  .price-val { display: block; font-size: 1rem; }
+  .price-name { font-size: clamp(16px, 4vw, 22px); }
+
+  /* Tech stack */
+  .tech-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tech-pill { padding: 14px 8px; }
 }
 </style>
 </head>
