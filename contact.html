@@ -97,8 +97,32 @@ body { background: #ffffff; }
 /* ── FAQ ── */
 .faq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 .faq-item { border-radius: var(--r-xl); padding: 28px 28px; }
-.faq-q { font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+.faq-q { font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 600; color: var(--ink); }
 .faq-a { font-size: 13px; color: var(--mist); line-height: 1.7; }
+
+/* ── FAQ Accordion ── */
+.faq-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12px; cursor: pointer; user-select: none;
+}
+.faq-header .faq-q { flex: 1; margin-bottom: 0; }
+.faq-plus {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  border: 1px solid rgba(28,24,36,0.14);
+  background: rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; line-height: 1; font-weight: 400;
+  transition: background 0.3s, transform 0.3s, color 0.3s;
+  margin-top: 2px;
+}
+.faq-acc.open .faq-plus {
+  background: var(--ink); color: #fff; transform: rotate(45deg);
+}
+.faq-body {
+  overflow: hidden; max-height: 0;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.faq-body p { padding-top: 12px; margin: 0; }
 
 @media(max-width:860px){
   /* ── Page hero ── */
@@ -291,29 +315,29 @@ body { background: #ffffff; }
     <div class="sec-label r">Häufige Fragen</div>
     <h2 class="sec-h r" style="margin-bottom:40px;">Das fragt man mich oft</h2>
     <div class="faq-grid">
-      <div class="faq-item glass r" data-tilt>
-        <div class="faq-q">Wie läuft ein Projekt ab?</div>
-        <p class="faq-a">Erst ein kurzes Kennenlerngespräch, dann Konzept &amp; Design, dann Entwicklung — mit dir im Loop. Du siehst alles, bevor es live geht.</p>
+      <div class="faq-item glass r faq-acc" data-tilt>
+        <div class="faq-header"><div class="faq-q">Wie läuft ein Projekt ab?</div><span class="faq-plus">+</span></div>
+        <div class="faq-body"><p class="faq-a">Erst ein kurzes Kennenlerngespräch, dann Konzept &amp; Design, dann Entwicklung — mit dir im Loop. Du siehst alles, bevor es live geht.</p></div>
       </div>
-      <div class="faq-item glass r" data-tilt>
-        <div class="faq-q">Wie lange dauert eine Website?</div>
-        <p class="faq-a">Eine Standard-Website ist in 3–5 Wochen fertig. Komplexere Projekte plane ich gemeinsam mit dir und einem realistischen Zeitplan.</p>
+      <div class="faq-item glass r faq-acc" data-tilt>
+        <div class="faq-header"><div class="faq-q">Wie lange dauert eine Website?</div><span class="faq-plus">+</span></div>
+        <div class="faq-body"><p class="faq-a">Eine Standard-Website ist in 3–5 Wochen fertig. Komplexere Projekte plane ich gemeinsam mit dir und einem realistischen Zeitplan.</p></div>
       </div>
-      <div class="faq-item glass r" data-tilt>
-        <div class="faq-q">Arbeitest du auch mit kleinen Budgets?</div>
-        <p class="faq-a">Ja — mein Starter-Paket beginnt bei 1.800 €. Wenn dein Budget kleiner ist, spreche ich ehrlich darüber, was möglich ist.</p>
+      <div class="faq-item glass r faq-acc" data-tilt>
+        <div class="faq-header"><div class="faq-q">Arbeitest du auch mit kleinen Budgets?</div><span class="faq-plus">+</span></div>
+        <div class="faq-body"><p class="faq-a">Ja — mein Starter-Paket beginnt bei 1.800 €. Wenn dein Budget kleiner ist, spreche ich ehrlich darüber, was möglich ist.</p></div>
       </div>
-      <div class="faq-item glass r" data-tilt>
-        <div class="faq-q">Kann ich die Website selbst bearbeiten?</div>
-        <p class="faq-a">Ja. Ich programmiere ein individuelles Backend mit Bearbeitungsfunktionen — maßgeschneidert für deine Bedürfnisse, egal welche Anforderungen dein Projekt hat.</p>
+      <div class="faq-item glass r faq-acc" data-tilt>
+        <div class="faq-header"><div class="faq-q">Kann ich die Website selbst bearbeiten?</div><span class="faq-plus">+</span></div>
+        <div class="faq-body"><p class="faq-a">Ja. Ich programmiere ein individuelles Backend mit Bearbeitungsfunktionen — maßgeschneidert für deine Bedürfnisse.</p></div>
       </div>
-      <div class="faq-item glass r" data-tilt>
-        <div class="faq-q">Bietest du laufende Betreuung an?</div>
-        <p class="faq-a">Absolut. Viele meiner Kunden betreue ich langfristig — Updates, neue Features, SEO-Optimierung, Content-Pflege.</p>
+      <div class="faq-item glass r faq-acc" data-tilt>
+        <div class="faq-header"><div class="faq-q">Bietest du laufende Betreuung an?</div><span class="faq-plus">+</span></div>
+        <div class="faq-body"><p class="faq-a">Absolut. Viele meiner Kunden betreue ich langfristig — Updates, neue Features, SEO-Optimierung, Content-Pflege.</p></div>
       </div>
-      <div class="faq-item glass r" data-tilt>
-        <div class="faq-q">Arbeitest du remote oder vor Ort?</div>
-        <p class="faq-a">Hauptsächlich remote. Für Projekte in der Region Stuttgart / Nürtingen treffe ich mich gerne auch persönlich.</p>
+      <div class="faq-item glass r faq-acc" data-tilt>
+        <div class="faq-header"><div class="faq-q">Arbeitest du remote oder vor Ort?</div><span class="faq-plus">+</span></div>
+        <div class="faq-body"><p class="faq-a">Hauptsächlich remote. Für Projekte in der Region Stuttgart / Nürtingen treffe ich mich gerne auch persönlich.</p></div>
       </div>
     </div>
   </div>
@@ -350,5 +374,28 @@ body { background: #ffffff; }
 </footer>
 
 <script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.faq-acc').forEach(item => {
+    const header = item.querySelector('.faq-header');
+    const body   = item.querySelector('.faq-body');
+    if (!header || !body) return;
+    body.style.overflow   = 'hidden';
+    body.style.maxHeight  = '0';
+    body.style.transition = 'max-height 0.4s cubic-bezier(0.4,0,0.2,1)';
+    header.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-acc.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-body').style.maxHeight = '0';
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
