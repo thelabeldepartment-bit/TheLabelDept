@@ -603,81 +603,133 @@
 }
 .cta-send-btn:hover { background: var(--ink); transform: translateY(-2px); }
 
+/* ── MOBILE SWIPE DOTS ── */
+.card-dots {
+  display: none; justify-content: center; gap: 6px;
+  padding: 8px 0 0;
+}
+.card-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(28,24,36,0.15); transition: all 0.3s;
+}
+.card-dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 860px) {
-  /* Hero — keep photo as full-bleed background */
-  #hero { position: relative; }
+
+  /* ── Hero: cinematic full-bleed ── */
+  #hero { min-height: 100svh; }
   .hero-right {
-    display: block;
-    position: absolute; inset: 0;
+    display: block; position: absolute; inset: 0;
     width: 100%; height: 100%; z-index: 1;
   }
   .hero-photo {
-    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-    object-position: 50% 10%;
-    opacity: 0.38;
+    object-position: 50% 12%; opacity: 1;
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    filter: grayscale(1) contrast(1.05) brightness(0.85);
+  }
+  /* dark gradient so text always readable */
+  .hero-right::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,11,9,0.82) 0%, rgba(13,11,9,0.3) 50%, transparent 100%);
+    z-index: 2;
   }
   .hero-left {
-    position: relative; z-index: 3;
-    padding: 120px 24px 80px;
-    max-width: 100%; min-height: 100vh;
-    text-align: left; align-items: flex-start;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    z-index: 4; min-height: unset;
+    padding: 0 24px 52px;
+    justify-content: flex-end; align-items: flex-start;
   }
-  .hero-logo-text { font-size: clamp(52px, 13vw, 88px); }
-  .hero-tagline { text-align: left; }
+  .hero-status { margin-bottom: 16px; }
+  .hero-logo-wrap { margin-bottom: 12px; }
+  .hero-logo-text {
+    font-size: clamp(52px, 14vw, 82px);
+    color: white;
+  }
+  .hero-tagline {
+    font-size: 10px; letter-spacing: 0.18em;
+    margin-bottom: 28px; color: rgba(255,255,255,0.6);
+  }
+  .hero-ctas .btn-main { padding: 13px 28px; font-size: 11px; }
+  .hero-ctas .btn-ghost { padding: 13px 24px; font-size: 11px; }
+  .hero-scroll { display: none; }
   .hero-photo-caption { display: none; }
 
-  /* Swipeable cards */
-  #hero-cards-section { padding: 48px 0 72px; overflow: hidden; }
+  /* ── Swipeable service cards ── */
+  #hero-cards-section { padding: 36px 0 56px; }
   .hero-cards {
     display: flex; flex-direction: row;
     overflow-x: auto; scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 12px; padding: 8px 20px 16px;
-    max-width: 100%;
+    gap: 10px; padding: 4px 20px 8px;
     scrollbar-width: none;
   }
   .hero-cards::-webkit-scrollbar { display: none; }
-  .hc {
-    flex: 0 0 78vw; max-width: 320px;
-    scroll-snap-align: start;
+  .hc { flex: 0 0 76vw; max-width: 300px; scroll-snap-align: start; }
+  .card-dots { display: flex; padding: 12px 0 0; }
+
+  /* ── Stats bar: tight single line ── */
+  .hero-stats { flex-wrap: nowrap; margin: 0 20px; border-radius: var(--r-lg); }
+  .hs-item { padding: 10px 10px; flex: 1; }
+  .hs-n { font-size: 15px; }
+  .hs-l { font-size: 6.5px; letter-spacing: 0.1em; }
+
+  /* ── Services accordion ── */
+  #services { padding: 72px 0 0; }
+  .srv-top { padding: 0 20px; }
+  .srv-header-row { padding: 22px 20px; grid-template-columns: 36px 1fr auto; gap: 14px; }
+  .srv-title { font-size: clamp(18px, 5vw, 28px); }
+  .srv-body-inner { padding: 0 20px 28px; grid-template-columns: 1fr; gap: 14px; }
+
+  /* ── Visuals: clean stacked, no overlapping ── */
+  #visuals { padding: 72px 20px; }
+  .vis-grid { grid-template-columns: 1fr; gap: 12px; }
+  .vis-card { min-height: 220px; padding: 32px 28px; }
+  .vis-card.tall { grid-row: span 1; min-height: 220px; }
+  .vis-card-title { font-size: clamp(22px, 6vw, 32px); }
+  .app-phone, .web-mockup { display: none; }
+  .wdc-orb1 { width: 130px; height: 130px; top: -30px; right: -30px; }
+  .wdc-orb2, .wdc-orb3 { display: none; }
+
+  /* ── About ── */
+  #about { padding: 72px 20px; }
+  .about-grid { grid-template-columns: 1fr; gap: 32px; }
+  .about-stats { grid-template-columns: repeat(2,1fr); gap: 8px; margin-top: 40px; }
+  .astat { padding: 20px 16px; }
+  .astat-n { font-size: 32px; }
+
+  /* ── Process: horizontal swipe ── */
+  #process { padding: 72px 0; }
+  .proc-head { padding: 0 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .proc-sub { text-align: left; max-width: 100%; margin-top: 4px; }
+  .proc-grid {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px; padding: 4px 20px 8px;
+    scrollbar-width: none;
   }
+  .proc-grid::-webkit-scrollbar { display: none; }
+  .proc-card { flex: 0 0 72vw; max-width: 280px; scroll-snap-align: start; }
 
-  /* Stats — compact single line */
-  .hero-stats { border-radius: var(--r-lg); flex-wrap: nowrap; margin: 0 20px; }
-  .hs-item { padding: 10px 14px; flex: 1; }
-  .hs-n { font-size: 16px; }
-  .hs-l { font-size: 7px; }
-
-  /* Services */
-  .srv-header-row { padding: 24px 20px; grid-template-columns: 36px 1fr auto; gap: 16px; }
-  .srv-body-inner { padding: 0 20px 28px; grid-template-columns: 1fr; gap: 16px; }
-
-  /* Visuals — stack and hide overlapping mockups */
-  .vis-grid { grid-template-columns: 1fr; }
-  .vis-card.tall { grid-row: span 1; min-height: 280px; }
-  .app-phone { display: none; }
-  .web-mockup { display: none; }
-  .wdc-orb1, .wdc-orb2, .wdc-orb3 { width: 120px; height: 120px; }
-
-  /* About / Process */
-  .about-grid { grid-template-columns: 1fr; gap: 40px; }
-  .about-stats { grid-template-columns: repeat(2,1fr); }
-  .proc-grid { grid-template-columns: repeat(2,1fr); }
-  .cta-form-row { grid-template-columns: 1fr; }
+  /* ── CTA ── */
+  #cta { padding: 80px 20px 100px; }
+  .cta-form-row { grid-template-columns: 1fr; gap: 0; }
+  .cta-form-submit { flex-direction: column; gap: 12px; align-items: stretch; }
+  .cta-send-btn { width: 100%; text-align: center; padding: 15px; }
+  .cta-form-note { text-align: center; }
 }
+
 @media (max-width: 600px) {
-  .hero-left { padding: 110px 18px 60px; }
-  .hero-logo-text { font-size: clamp(46px, 14vw, 72px); }
-  #services, #visuals, #about, #process, #cta { padding-left: 18px; padding-right: 18px; }
-  .proc-grid { grid-template-columns: 1fr; }
-  .about-stats { grid-template-columns: repeat(2,1fr); }
-  .srv-header-row { grid-template-columns: 28px 1fr auto; }
-  .hc { flex: 0 0 85vw; }
+  .hero-left { padding: 0 18px 44px; }
+  .hero-logo-text { font-size: clamp(44px, 15vw, 68px); }
+  .hc { flex: 0 0 83vw; }
   .hero-stats { margin: 0 18px; }
-  .hs-item { padding: 9px 10px; }
-  .hs-n { font-size: 14px; }
+  .hs-item { padding: 9px 8px; }
+  .hs-n { font-size: 13px; }
+  .hs-l { font-size: 6px; }
+  .proc-card { flex: 0 0 80vw; }
 }
 </style>
 </head>
@@ -785,6 +837,11 @@
         <a href="services.html" class="hc-arrow">→</a>
       </div>
     </div>
+  </div>
+  <div class="card-dots" id="card-dots">
+    <div class="card-dot active"></div>
+    <div class="card-dot"></div>
+    <div class="card-dot"></div>
   </div>
   <div class="hero-stats">
     <div class="hs-item"><div class="hs-n">48+</div><div class="hs-l">Projekte</div></div>
@@ -1152,5 +1209,17 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script>
+// Swipe dot sync for service cards
+(function() {
+  const track = document.querySelector('.hero-cards');
+  const dots  = document.querySelectorAll('#card-dots .card-dot');
+  if (!track || !dots.length) return;
+  track.addEventListener('scroll', () => {
+    const idx = Math.round(track.scrollLeft / track.offsetWidth);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>
