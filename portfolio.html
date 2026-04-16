@@ -520,65 +520,64 @@ input[type="file"].admin-file-input { display: none; }
 </footer>
 
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════
-   THE LABEL DEPT — Portfolio Manager (IndexedDB edition)
-   No storage limits — handles hundreds of projects + large files
+   THE LABEL DEPT — Portfolio Manager (Supabase edition)
    ════════════════════════════════════════════════════════ */
 
-const COLORS   = ['c-violet','c-sky','c-peach','c-mint','c-rose','c-sand','c-steel','c-green'];
-const DB_NAME  = 'tld_portfolio';
-const DB_VER   = 1;
-const OS_NAME  = 'projects';
-let   _db      = null;
+const SUPABASE_URL = 'https://fkrynudcpfhlrzqgfvvs.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_o5kyAl-w7FokQ_1ZfB-aEw_vpThz6Hk';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ── IndexedDB helpers ── */
-function openDB() {
-  return new Promise((res, rej) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = e => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(OS_NAME)) {
-        const os = db.createObjectStore(OS_NAME, { keyPath: 'id' });
-        os.createIndex('createdAt', 'createdAt');
-      }
-    };
-    req.onsuccess = e => { _db = e.target.result; res(_db); };
-    req.onerror   = e => rej(e.target.error);
-  });
-}
-function getDB() { return _db ? Promise.resolve(_db) : openDB(); }
+const COLORS = ['c-violet','c-sky','c-peach','c-mint','c-rose','c-sand','c-steel','c-green'];
 
-function dbGetAll() {
-  return getDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(OS_NAME,'readonly').objectStore(OS_NAME).getAll();
-    req.onsuccess = e => res((e.target.result || []).sort((a,b) => (b.createdAt||0)-(a.createdAt||0)));
-    req.onerror   = e => rej(e.target.error);
-  }));
+/* ── Supabase DB helpers ── */
+async function dbGetAll() {
+  const { data, error } = await sb.from('projects').select('*').order('sort_order', { ascending: true });
+  if (error) throw error;
+  return data || [];
 }
-function dbPut(p) {
-  return getDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(OS_NAME,'readwrite').objectStore(OS_NAME).put(p);
-    req.onsuccess = () => res(); req.onerror = e => rej(e.target.error);
-  }));
+async function dbPut(p) {
+  const { error } = await sb.from('projects').upsert(p);
+  if (error) throw error;
 }
-function dbDelete(id) {
-  return getDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(OS_NAME,'readwrite').objectStore(OS_NAME).delete(id);
-    req.onsuccess = () => res(); req.onerror = e => rej(e.target.error);
-  }));
+async function dbDelete(id) {
+  try {
+    await sb.storage.from('portfolio').remove([`thumbnails/${id}.jpg`]);
+    const { data: photoFiles } = await sb.storage.from('portfolio').list(`photos/${id}`);
+    if (photoFiles && photoFiles.length) {
+      await sb.storage.from('portfolio').remove(photoFiles.map(f => `photos/${id}/${f.name}`));
+    }
+    await sb.storage.from('portfolio').remove([`files/${id}.pdf`]);
+  } catch(e) { /* ignore storage errors */ }
+  const { error } = await sb.from('projects').delete().eq('id', id);
+  if (error) throw error;
 }
-function dbClear() {
-  return getDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(OS_NAME,'readwrite').objectStore(OS_NAME).clear();
-    req.onsuccess = () => res(); req.onerror = e => rej(e.target.error);
-  }));
+async function dbClear() {
+  const { error } = await sb.from('projects').delete().neq('id', '');
+  if (error) throw error;
 }
-function dbCount() {
-  return getDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(OS_NAME,'readonly').objectStore(OS_NAME).count();
-    req.onsuccess = e => res(e.target.result); req.onerror = e => rej(e.target.error);
-  }));
+async function dbCount() {
+  const { count, error } = await sb.from('projects').select('*', { count: 'exact', head: true });
+  if (error) throw error;
+  return count || 0;
+}
+
+/* ── Storage helpers ── */
+async function uploadToStorage(dataUrl, path, contentType) {
+  const res  = await fetch(dataUrl);
+  const blob = await res.blob();
+  const { error } = await sb.storage.from('portfolio').upload(path, blob, { upsert: true, contentType });
+  if (error) throw error;
+  const { data } = sb.storage.from('portfolio').getPublicUrl(path);
+  return data.publicUrl;
+}
+async function uploadPDF(file, path) {
+  const { error } = await sb.storage.from('portfolio').upload(path, file, { upsert: true, contentType: 'application/pdf' });
+  if (error) throw error;
+  const { data } = sb.storage.from('portfolio').getPublicUrl(path);
+  return data.publicUrl;
 }
 
 /* ── Image compression ── */
@@ -602,15 +601,6 @@ function compressImage(file, maxW, maxH, quality) {
     };
     reader.readAsDataURL(file);
   });
-}
-function readFileData(f, isThumb) {
-  if (f.type === 'application/pdf') {
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = ev => res(ev.target.result); r.onerror = rej; r.readAsDataURL(f);
-    });
-  }
-  return isThumb ? compressImage(f, 900, 700, 0.80) : compressImage(f, 1600, 1200, 0.82);
 }
 
 /* ── Marquee ── */
@@ -743,15 +733,8 @@ function initDrag() {
 
 async function saveGridOrder() {
   const cards = Array.from(document.querySelectorAll('#portfolio-grid .portfolio-item[data-id]'));
-  const all   = await dbGetAll();
-  const map   = Object.fromEntries(all.map(p => [p.id, p]));
-  const total = cards.length;
-  for (let i = 0; i < total; i++) {
-    const id = cards[i].dataset.id;
-    if (map[id]) {
-      map[id].createdAt = (total - i) * 100000;
-      await dbPut(map[id]);
-    }
+  for (let i = 0; i < cards.length; i++) {
+    await sb.from('projects').update({ sort_order: i }).eq('id', cards[i].dataset.id);
   }
 }
 
@@ -766,17 +749,7 @@ function openModal(p) {
   const hasPhotos = photos.length > 0;
 
   if (hasPdf && !hasPhotos) {
-    /* PDF only */
-    try {
-      const b64 = p.file.split(',')[1];
-      const bin = atob(b64);
-      const buf = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
-      const url = URL.createObjectURL(new Blob([buf], { type: 'application/pdf' }));
-      body.innerHTML = `<embed src="${url}" type="application/pdf" style="width:100%;height:100%;">`;
-    } catch {
-      body.innerHTML = `<div class="proj-modal-empty">PDF konnte nicht geladen werden.</div>`;
-    }
+    body.innerHTML = `<embed src="${p.file}" type="application/pdf" style="width:100%;height:100%;">`;
   } else if (hasPhotos) {
     /* Photo gallery with optional PDF tab */
     let idx = 0;
@@ -830,13 +803,7 @@ function openModal(p) {
         tp.style.background = 'rgba(255,255,255,0.15)'; tp.style.color = 'white';
         tb.style.background = 'rgba(255,255,255,0.06)'; tb.style.color = 'rgba(255,255,255,0.5)';
         if (!pv.innerHTML) {
-          try {
-            const b64 = p.file.split(',')[1]; const bin = atob(b64);
-            const buf = new Uint8Array(bin.length);
-            for (let i=0;i<bin.length;i++) buf[i]=bin.charCodeAt(i);
-            const url = URL.createObjectURL(new Blob([buf],{type:'application/pdf'}));
-            pv.innerHTML = `<embed src="${url}" type="application/pdf" style="width:100%;height:100%;">`;
-          } catch { pv.innerHTML = `<div class="proj-modal-empty">PDF konnte nicht geladen werden.</div>`; }
+          pv.innerHTML = `<embed src="${p.file}" type="application/pdf" style="width:100%;height:100%;">`;
         }
       }
     };
@@ -938,14 +905,11 @@ function openAdmin()  { document.getElementById('admin-panel').classList.add('op
 function closeAdmin() { document.getElementById('admin-panel').classList.remove('open'); }
 
 /* ── File input UI ── */
-function bindFileInput(inputId, labelId, defaultText) {
-  document.getElementById(inputId).addEventListener('change', function() {
-    const lbl = document.getElementById(labelId);
-    if (this.files[0]) { lbl.textContent = `✓ ${this.files[0].name}`; lbl.classList.add('has-file'); }
-    else               { lbl.textContent = defaultText; lbl.classList.remove('has-file'); }
-  });
-}
-bindFileInput('proj-file-input',  'file-label',  '+ Website als PDF hochladen');
+document.getElementById('proj-file-input').addEventListener('change', function() {
+  const lbl = document.getElementById('file-label');
+  if (this.files[0]) { lbl.textContent = `✓ ${this.files[0].name}`; lbl.classList.add('has-file'); }
+  else               { lbl.textContent = '+ Website als PDF hochladen'; lbl.classList.remove('has-file'); }
+});
 
 /* ── Crop Editor ── */
 let _cropResolve = null;
@@ -1123,10 +1087,11 @@ document.getElementById('admin-form').addEventListener('submit', async e => {
   btn.disabled = true; btn.textContent = 'Wird gespeichert…';
 
   try {
-    const thumbLabel  = document.getElementById('thumb-label');
+    const thumbLabel   = document.getElementById('thumb-label');
     const croppedThumb = thumbLabel.dataset.croppedData || null;
-    const photoFiles = Array.from(document.getElementById('proj-photos-input').files);
-    const projFile   = document.getElementById('proj-file-input').files[0];
+    const photoFiles   = Array.from(document.getElementById('proj-photos-input').files);
+    const projFile     = document.getElementById('proj-file-input').files[0];
+    const id = editId || Date.now().toString();
 
     const fields = {
       title:       document.getElementById('proj-title').value.trim(),
@@ -1137,33 +1102,51 @@ document.getElementById('admin-form').addEventListener('submit', async e => {
       year:        document.getElementById('proj-year').value.trim() || String(new Date().getFullYear()),
     };
 
-    /* compress all new photos */
-    const newPhotos = photoFiles.length
-      ? await Promise.all(photoFiles.map(f => compressImage(f, 1600, 1200, 0.82)))
-      : null;
+    /* upload thumbnail if newly cropped */
+    let thumbnailUrl = null;
+    if (croppedThumb) {
+      thumbnailUrl = await uploadToStorage(croppedThumb, `thumbnails/${id}.jpg`, 'image/jpeg');
+    }
+
+    /* compress + upload new photos */
+    let photoUrls = null;
+    if (photoFiles.length) {
+      photoUrls = await Promise.all(photoFiles.map(async (f, i) => {
+        const dataUrl = await compressImage(f, 1600, 1200, 0.82);
+        return await uploadToStorage(dataUrl, `photos/${id}/${Date.now()}_${i}.jpg`, 'image/jpeg');
+      }));
+    }
+
+    /* upload PDF */
+    let fileUrl = null;
+    if (projFile) {
+      fileUrl = await uploadPDF(projFile, `files/${id}.pdf`);
+    }
 
     if (editId) {
       const all      = await dbGetAll();
       const existing = all.find(x => x.id === editId) || {};
       const updated  = {
         ...existing, ...fields,
-        thumbnail: croppedThumb || existing.thumbnail,
-        photos:    newPhotos ? [...(existing.photos||[]), ...newPhotos] : (existing.photos||[]),
-        file:      projFile  ? await readFileData(projFile, false) : existing.file,
-        fileType:  projFile  ? 'pdf' : existing.fileType,
+        thumbnail: thumbnailUrl || existing.thumbnail,
+        photos:    photoUrls ? [...(existing.photos||[]), ...photoUrls] : (existing.photos||[]),
+        file:      fileUrl || existing.file,
+        file_type: projFile ? 'pdf' : existing.file_type,
       };
       await dbPut(updated);
       btn.textContent = '✓ Gespeichert!';
       setTimeout(() => { btn.textContent = 'Änderungen speichern'; btn.disabled = false; }, 2200);
     } else {
+      const count = await dbCount();
       const p = {
-        id:        Date.now().toString(),
-        createdAt: Date.now(),
+        id,
+        created_at: Date.now(),
+        sort_order: count,
         ...fields,
-        thumbnail: croppedThumb || null,
-        photos:    newPhotos || [],
-        file:      projFile  ? await readFileData(projFile, false) : null,
-        fileType:  projFile  ? 'pdf' : null,
+        thumbnail: thumbnailUrl || null,
+        photos:    photoUrls || [],
+        file:      fileUrl || null,
+        file_type: projFile ? 'pdf' : null,
       };
       await dbPut(p);
       btn.textContent = '✓ Gespeichert!';
@@ -1184,7 +1167,6 @@ document.getElementById('admin-cancel').addEventListener('click', resetForm);
 async function doReset() {
   if (confirm('Wirklich alle Projekte löschen?')) {
     await dbClear();
-    localStorage.removeItem('tld_seeded_v3');
     renderGrid(); renderAdminList();
   }
 }
@@ -1196,27 +1178,6 @@ document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('proj-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 document.getElementById('admin-close').addEventListener('click', closeAdmin);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeAdmin(); } });
-
-/* ── Seed data + init ── */
-const SEED_KEY = 'tld_seeded_v3';
-async function init() {
-  await openDB();
-
-  const count = await dbCount();
-  if (count === 0 && !localStorage.getItem(SEED_KEY)) {
-    const seed = [
-      { id:'seed-1', createdAt:1000, title:'Bloom Cosmetics',   client:'', description:'Vollständige Markenidentität für eine nachhaltige Kosmetikmarke — Logo, Farbwelt, Verpackung und Website.', category:'branding',      tags:['Figma','Branding','Webflow'],          year:'2024', thumbnail:null, file:null, fileType:null },
-      { id:'seed-2', createdAt:2000, title:'Pace Running App',  client:'', description:'Lauf-Tracking-App mit KI-Coaching, personalisierten Trainingsplänen und sozialer Community-Funktion.',     category:'app',           tags:['React Native','Node.js','GPT-4'],      year:'2024', thumbnail:null, file:null, fileType:null },
-      { id:'seed-3', createdAt:3000, title:'Karma Yoga Studio', client:'', description:'Website mit Online-Buchungssystem, Kurskalender und Mitgliederbereich für ein Yoga-Studio in Stuttgart.',  category:'web',           tags:['React','Framer Motion','Stripe'],      year:'2023', thumbnail:null, file:null, fileType:null },
-      { id:'seed-4', createdAt:4000, title:'NeuralMenu',        client:'', description:'KI-gestütztes Menüsystem für Restaurants — personalisierte Empfehlungen und dynamische Preisgestaltung.', category:'ki',            tags:['OpenAI','Next.js','Supabase'],         year:'2023', thumbnail:null, file:null, fileType:null },
-    ];
-    for (const p of seed) await dbPut(p);
-    localStorage.setItem(SEED_KEY, '1');
-  }
-
-  await renderGrid();
-  initDrag();
-}
 
 /* ── Filter click handlers ── */
 document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1236,7 +1197,9 @@ document.getElementById('admin-trigger').addEventListener('click', () => {
   if (_clicks >= 3) { _clicks = 0; openAdmin(); }
 });
 
-init();
+/* ── Init ── */
+renderGrid();
+initDrag();
 </script>
 
 </body>
