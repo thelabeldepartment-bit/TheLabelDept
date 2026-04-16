@@ -763,7 +763,19 @@ function openModal(p) {
 
   if (hasPdf && !hasPhotos) {
     body.classList.add('pdf-mode');
-    body.innerHTML = `<iframe src="${p.file}#toolbar=0&view=FitH&scrollbar=1" style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+    body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;">PDF wird geladen…</div>`;
+    fetch(p.file)
+      .then(r => r.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        body.innerHTML = `<iframe src="${url}" style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+      })
+      .catch(() => {
+        body.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:40px;text-align:center;">
+          <p style="color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;line-height:1.8;">PDF kann nicht eingebettet werden.</p>
+          <a href="${p.file}" target="_blank" style="padding:10px 24px;border-radius:20px;background:var(--accent);color:white;text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">PDF öffnen →</a>
+        </div>`;
+      });
   } else if (hasPhotos) {
     /* Photo gallery with optional PDF tab */
     let idx = 0;
@@ -817,8 +829,16 @@ function openModal(p) {
         tp.style.background = 'rgba(255,255,255,0.15)'; tp.style.color = 'white';
         tb.style.background = 'rgba(255,255,255,0.06)'; tb.style.color = 'rgba(255,255,255,0.5)';
         if (!pv.innerHTML) {
-          body.classList.add('pdf-mode');
-          pv.innerHTML = `<iframe src="${p.file}#toolbar=0&view=FitH&scrollbar=1" style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+          pv.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace;font-size:9px;">Lädt…</div>`;
+          fetch(p.file)
+            .then(r => r.blob())
+            .then(blob => {
+              const url = URL.createObjectURL(blob);
+              pv.innerHTML = `<iframe src="${url}" style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+            })
+            .catch(() => {
+              pv.innerHTML = `<a href="${p.file}" target="_blank" style="padding:10px 24px;border-radius:20px;background:var(--accent);color:white;text-decoration:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;">PDF öffnen →</a>`;
+            });
         }
       }
     };
