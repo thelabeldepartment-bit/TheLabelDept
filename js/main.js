@@ -181,6 +181,47 @@ function initCtaCursor() {
   })();
 }
 
+/* ── Mobile Nav ── */
+function initMobileNav() {
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+
+  const btn = document.createElement('button');
+  btn.className = 'nav-hamburger';
+  btn.setAttribute('aria-label', 'Menü');
+  btn.innerHTML = '<span></span>';
+  nav.appendChild(btn);
+
+  const menu = document.createElement('div');
+  menu.className = 'mobile-menu';
+  menu.innerHTML = `
+    <a href="index.html">Start</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="services.html">Leistungen</a>
+    <a href="about.html">Studio</a>
+    <a href="contact.html">Kontakt</a>
+    <a href="contact.html" class="mob-cta">Projekt starten</a>`;
+  document.body.appendChild(menu);
+
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  menu.querySelectorAll('a:not(.mob-cta)').forEach(a => {
+    if ((a.getAttribute('href') || '').split('/').pop() === path) a.classList.add('active');
+  });
+
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+}
+
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', () => {
   initReveal();
@@ -192,4 +233,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initPortfolioFilter();
   initContactForm();
   initCtaCursor();
+  initMobileNav();
 });
